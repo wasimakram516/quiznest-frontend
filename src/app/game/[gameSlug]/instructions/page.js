@@ -54,6 +54,7 @@ export default function InstructionsPage() {
 
   return (
     <Box
+      dir="rtl"
       sx={{
         height: "100vh",
         width: "100vw",
@@ -68,13 +69,13 @@ export default function InstructionsPage() {
         position: "relative",
       }}
     >
-      {/* Back Button */}
+      {/* زر العودة */}
       <IconButton
         onClick={() => router.push(`/game/${game.slug}`)}
         sx={{
           position: "fixed",
           top: 20,
-          left: 20,
+          right: 20, // flipped for RTL
           bgcolor: "primary.main",
           color: "white",
         }}
@@ -90,7 +91,7 @@ export default function InstructionsPage() {
           width: "100%",
           textAlign: "center",
           backdropFilter: "blur(8px)",
-          backgroundColor: "rgba(255,255,255,0.9)",
+          backgroundColor: "rgba(255,255,255,0.3)",
           borderRadius: 4,
         }}
       >
@@ -99,32 +100,48 @@ export default function InstructionsPage() {
         </Typography>
 
         <Typography variant="h6" sx={{ mb: 3 }}>
-          Hi <strong>{playerInfo.name}</strong>, here’s what you need to know:
+          أهلاً بك{" "}
+          <Box component="strong" display="inline">
+            {playerInfo.name}
+          </Box>{" "}
+          هذا ما تحتاج معرفته:
         </Typography>
 
-        <Stack spacing={2} sx={{ mb: 4 }} alignItems="flex-start">
-          <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack spacing={2} sx={{ mb: 4 }} alignItems="flex-end">
+          <Stack direction="row-reverse" alignItems="center" spacing={1}>
             <FormatListNumberedIcon color="primary" />
             <Typography>
-              Total Questions: <strong>{game.questions.length}</strong>
+            عدد الأسئلة:{" "}
+              <Box component="strong" display="inline">
+                {game.questions.length}
+              </Box>
             </Typography>
           </Stack>
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row-reverse" alignItems="center" spacing={1}>
             <QuizIcon color="primary" />
             <Typography>
-              Choices per Question: <strong>{game.choicesCount}</strong>
+            الخيارات المتعددة: {" "}
+              <Box component="strong" display="inline">
+                {game.choicesCount}
+              </Box>
             </Typography>
           </Stack>
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row-reverse" alignItems="center" spacing={1}>
             <TimerIcon color="primary" />
             <Typography>
-              Countdown: <strong>{game.countdownTimer} sec</strong>
+            العد التنازلي للبدأ:{" "}
+              <Box component="strong" display="inline">
+                {game.countdownTimer} ثانية
+              </Box>
             </Typography>
           </Stack>
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row-reverse" alignItems="center" spacing={1}>
             <AccessTimeIcon color="primary" />
             <Typography>
-              Total Time: <strong>{game.gameSessionTimer} sec</strong>
+            مدة الإختبار:{" "}
+              <Box component="strong" display="inline">
+                {game.gameSessionTimer} ثانية
+              </Box>
             </Typography>
           </Stack>
         </Stack>
@@ -141,7 +158,7 @@ export default function InstructionsPage() {
             borderRadius: "30px",
           }}
         >
-          Start Game
+          ابدأ اللعبة
         </Button>
       </Paper>
     </Box>

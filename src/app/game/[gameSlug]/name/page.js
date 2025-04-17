@@ -98,7 +98,7 @@ export default function NamePage() {
           maxWidth: 500,
           textAlign: "center",
           backdropFilter: "blur(6px)",
-          backgroundColor: "rgba(255,255,255,0.85)",
+          backgroundColor: "rgba(255,255,255,0.3)",
         }}
       >
         <Typography variant="h5" fontWeight="bold" gutterBottom>

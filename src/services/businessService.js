@@ -1,55 +1,37 @@
 import api from "./api";
 
-// Get all businesses
+// ✅ Get all businesses
 export const getBusinesses = async () => {
-  try {
-    const { data } = await api.get("/businesses");
-    return data.data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to fetch businesses!";
-  }
+  const response = await api.get("/businesses");
+  return response.data.data;
 };
 
-// Get a business by slug
+// ✅ Get a business by slug
 export const getBusinessBySlug = async (slug) => {
-  try {
-    const { data } = await api.get(`/businesses/${slug}`);
-    return data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to fetch business!";
-  }
+  const response = await api.get(`/businesses/${slug}`);
+  return response.data.data;
 };
 
-// Create new business
+// ✅ Create new business
 export const createBusiness = async (formData) => {
-  try {
-    const { data } = await api.post("/businesses", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to create business!";
-  }
+  const response = await api.post("/businesses", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  
+  return response.data.data;
 };
 
-// Update business
+// ✅ Update business
 export const updateBusiness = async (id, formData) => {
-  try {
-    const { data } = await api.put(`/businesses/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to update business!";
-  }
+  const response = await api.put(`/businesses/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  
+  return response.data.data;
 };
 
-// Delete business
+// ✅ Delete business
 export const deleteBusiness = async (id) => {
-  try {
-    const { data } = await api.delete(`/businesses/${id}`);
-    return data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to delete business!";
-  }
+  const response = await api.delete(`/businesses/${id}`);
+  return response.data.data;
 };

@@ -10,7 +10,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 
@@ -28,6 +29,8 @@ const QuestionFormModal = ({
     correctAnswerIndex: 0,
     hint: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -50,9 +53,15 @@ const QuestionFormModal = ({
     setForm((prev) => ({ ...prev, answers: updated }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.question || form.answers.some((a) => !a)) return;
-    onSubmit(form);
+
+    setLoading(true);
+    try {
+      await onSubmit(form);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,26 +89,25 @@ const QuestionFormModal = ({
           />
         ))}
 
-<FormControl fullWidth>
-  <InputLabel>Correct Answer</InputLabel>
-  <Select
-    value={form.correctAnswerIndex}
-    onChange={(e) =>
-      setForm((prev) => ({
-        ...prev,
-        correctAnswerIndex: parseInt(e.target.value),
-      }))
-    }
-    label="Correct Answer"
-  >
-    {form.answers.map((ans, i) => (
-      <MenuItem key={i} value={i}>
-        {String.fromCharCode(65 + i)}. {ans || "(empty)"}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-
+        <FormControl fullWidth>
+          <InputLabel>Correct Answer</InputLabel>
+          <Select
+            value={form.correctAnswerIndex}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                correctAnswerIndex: parseInt(e.target.value),
+              }))
+            }
+            label="Correct Answer"
+          >
+            {form.answers.map((ans, i) => (
+              <MenuItem key={i} value={i}>
+                {String.fromCharCode(65 + i)}. {ans || "(empty)"}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <TextField
           label="Hint (optional)"
@@ -111,11 +119,22 @@ const QuestionFormModal = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button variant="outlined" onClick={onClose}>
+        <Button variant="outlined" onClick={onClose} disabled={loading}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleSubmit}>
-          {editMode ? "Update" : "Add"}
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={20} color="inherit" />}
+        >
+          {loading
+            ? editMode
+              ? "Updating..."
+              : "Adding..."
+            : editMode
+            ? "Update"
+            : "Add"}
         </Button>
       </DialogActions>
     </Dialog>

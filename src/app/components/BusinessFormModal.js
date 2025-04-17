@@ -9,6 +9,7 @@ import {
   Button,
   Box,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 
@@ -28,6 +29,7 @@ const BusinessFormModal = ({
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -40,13 +42,12 @@ const BusinessFormModal = ({
       });
       setErrors({});
     }
-  }, [open]); 
+  }, [open]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
 
-    // Validate as user types
     if (name === "name" && value.trim()) {
       setErrors((prev) => ({ ...prev, name: "" }));
     }
@@ -93,18 +94,24 @@ const BusinessFormModal = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
 
-    const payload = new FormData();
-    payload.append("name", form.name);
-    payload.append("slug", form.slug);
-    payload.append("description", form.description);
-    if (form.logoFile) {
-      payload.append("logo", form.logoFile);
-    }
+    setLoading(true);
 
-    onSubmit(payload, editMode);
+    try {
+      const payload = new FormData();
+      payload.append("name", form.name);
+      payload.append("slug", form.slug);
+      payload.append("description", form.description);
+      if (form.logoFile) {
+        payload.append("logo", form.logoFile);
+      }
+
+      await onSubmit(payload, editMode);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -170,11 +177,16 @@ const BusinessFormModal = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={onClose} variant="outlined" color="inherit">
+        <Button onClick={onClose} variant="outlined" color="inherit" disabled={loading}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained">
-          {editMode ? "Update" : "Create"}
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={20} color="inherit" />}
+        >
+          {loading ? (editMode ? "Updating..." : "Creating...") : editMode ? "Update" : "Create"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -10,8 +10,10 @@ import {
   Box,
   Typography,
   MenuItem,
+  CircularProgress
 } from "@mui/material";
 import { useState, useEffect } from "react";
+import { useMessage } from "@/app/context/MessageContext";
 
 const GameFormModal = ({
   open,
@@ -36,9 +38,12 @@ const GameFormModal = ({
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const { showMessage } = useMessage();
 
   useEffect(() => {
-    if (!open || !initialValues || Object.keys(initialValues).length === 0) return;
+    if (!open || !initialValues || Object.keys(initialValues).length === 0)
+      return;
 
     setForm({
       title: initialValues.title || "",
@@ -84,31 +89,48 @@ const GameFormModal = ({
     if (!form.title.trim()) newErrors.title = "Title is required";
     if (!form.slug.trim()) newErrors.slug = "Slug is required";
     if (!form.choicesCount) newErrors.choicesCount = "Option count is required";
-    if (!form.countdownTimer) newErrors.countdownTimer = "Countdown time is required";
-    if (!form.gameSessionTimer) newErrors.gameSessionTimer = "Quiz time is required";
-    if (!editMode && !form.coverImage) newErrors.coverImage = "Cover image is required";
-    if (!editMode && !form.nameImage) newErrors.nameImage = "Name image is required";
-    if (!editMode && !form.backgroundImage) newErrors.backgroundImage = "Background image is required";
+    if (!form.countdownTimer)
+      newErrors.countdownTimer = "Countdown time is required";
+    if (!form.gameSessionTimer)
+      newErrors.gameSessionTimer = "Quiz time is required";
+    if (!editMode && !form.coverImage)
+      newErrors.coverImage = "Cover image is required";
+    if (!editMode && !form.nameImage)
+      newErrors.nameImage = "Name image is required";
+    if (!editMode && !form.backgroundImage)
+      newErrors.backgroundImage = "Background image is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
 
-    const payload = new FormData();
-    payload.append("title", form.title);
-    payload.append("slug", form.slug);
-    payload.append("choicesCount", form.choicesCount);
-    payload.append("countdownTimer", form.countdownTimer);
-    payload.append("gameSessionTimer", form.gameSessionTimer);
+    setLoading(true);
 
-    if (form.coverImage) payload.append("cover", form.coverImage);
-    if (form.nameImage) payload.append("name", form.nameImage);
-    if (form.backgroundImage) payload.append("background", form.backgroundImage);
+    try {
+      const payload = new FormData();
+      payload.append("title", form.title);
+      payload.append("slug", form.slug);
+      payload.append("choicesCount", form.choicesCount);
+      payload.append("countdownTimer", form.countdownTimer);
+      payload.append("gameSessionTimer", form.gameSessionTimer);
 
-    onSubmit(payload, editMode);
+      if (form.coverImage) payload.append("cover", form.coverImage);
+      if (form.nameImage) payload.append("name", form.nameImage);
+      if (form.backgroundImage) payload.append("background", form.backgroundImage);
+
+      await onSubmit(payload, editMode); 
+    } catch (error) {
+      showMessage(
+        error.response?.data?.message || "Failed to save game.",
+        "error"
+      );
+    }
+     finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -222,11 +244,27 @@ const GameFormModal = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={onClose} variant="outlined" color="inherit">
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          color="inherit"
+          disabled={loading}
+        >
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained">
-          {editMode ? "Update" : "Create"}
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={20} color="inherit" />}
+        >
+          {loading
+            ? editMode
+              ? "Updating..."
+              : "Creating..."
+            : editMode
+            ? "Update"
+            : "Create"}
         </Button>
       </DialogActions>
     </Dialog>

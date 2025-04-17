@@ -46,9 +46,7 @@ export default function BreadcrumbsNav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const segments = pathname
-    .split("/")
-    .filter((seg) => seg && seg !== "cms");
+  const segments = pathname.split("/").filter((seg) => seg && seg !== "cms");
 
   const paths = segments.map((seg, i) => ({
     segment: seg,
@@ -73,11 +71,22 @@ export default function BreadcrumbsNav() {
           </Box>
         </Link>
 
-        {paths.map((p, i) =>
-          i === paths.length - 1 ? (
-            <Typography key={i} color="text.primary">
-              {formatSegment(p.segment)}
-            </Typography>
+        {paths.map((p, i) => {
+          const segment = formatSegment(p.segment);
+          const isLast = i === paths.length - 1;
+
+          return isLast ? (
+            // ✅ Don’t wrap potentially block elements inside <Typography>
+            <Box
+              key={i}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                color: "text.primary",
+              }}
+            >
+              {segment}
+            </Box>
           ) : (
             <Link
               key={i}
@@ -89,10 +98,10 @@ export default function BreadcrumbsNav() {
                 router.push(p.href);
               }}
             >
-              {formatSegment(p.segment)}
+              {segment}
             </Link>
-          )
-        )}
+          );
+        })}
       </Breadcrumbs>
     </Box>
   );

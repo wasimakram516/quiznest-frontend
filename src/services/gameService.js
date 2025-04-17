@@ -1,66 +1,44 @@
 import api from "./api";
 
-// Get games by business slug
+// ✅ Get games by business slug
 export const getGamesByBusiness = async (slug) => {
-  const res = await api.get(`/games/business/${slug}`);
-  return res.data.data;
+  const response = await api.get(`/games/business/${slug}`);
+  return response.data.data;
 };
 
-// Get all games
+// ✅ Get all games
 export const getAllGames = async () => {
-  try {
-    const { data } = await api.get("/games");
-    return data.data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to fetch games!";
-  }
+  const response = await api.get("/games");
+  return response.data.data;
 };
 
-// Get game by ID
+// ✅ Get game by ID
 export const getGameById = async (id) => {
-  try {
-    const { data } = await api.get(`/games/${id}`);
-    return data.data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to fetch game!";
-  }
+  const response = await api.get(`/games/${id}`);
+  return response.data.data;
 };
 
-// Get game by slug
+// ✅ Get game by slug
 export const getGameBySlug = async (gameSlug) => {
-  try {
-    const { data } = await api.get(`/games/slug/${gameSlug}`);
-    return data.data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to fetch game by slug!";
-  }
+  const response = await api.get(`/games/slug/${gameSlug}`);
+  return response.data.data;
 };
 
-// Create new game
+// ✅ Create new game
 export const createGame = async (businessSlug, formData) => {
-  formData.append("businessSlug", businessSlug); 
-
-  const res = await api.post("/games", formData); 
-  return res.data;
+  formData.append("businessSlug", businessSlug);
+  const response = await api.post("/games", formData);
+  return response.data.data;
 };
 
-
-// Update game
+// ✅ Update game
 export const updateGame = async (id, formData) => {
-  try {
-    const { data } = await api.put(`/games/${id}`, formData);
-    return data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to update game!";
-  }
+  const response = await api.put(`/games/${id}`, formData);
+  return response.data.data;
 };
 
-// Delete game
+// ✅ Delete game
 export const deleteGame = async (id) => {
-  try {
-    const { data } = await api.delete(`/games/${id}`);
-    return data;
-  } catch (error) {
-    throw error?.response?.data?.message || "Failed to delete game!";
-  }
+  const response = await api.delete(`/games/${id}`);
+  return response.data.data;
 };

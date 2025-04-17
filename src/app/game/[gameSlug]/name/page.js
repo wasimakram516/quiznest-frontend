@@ -106,7 +106,7 @@ export default function NamePage() {
         </Typography>
 
         <TextField
-          label="Your Name"
+          label="الاسم"
           fullWidth
           required
           sx={{ my: 2 }}
@@ -114,7 +114,7 @@ export default function NamePage() {
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
         <TextField
-          label="Company (optional)"
+          label="اسم الشركة"
           fullWidth
           sx={{ mb: 2 }}
           value={form.company}
@@ -135,7 +135,7 @@ export default function NamePage() {
             borderRadius: "30px",
           }}
         >
-          {submitting ? <CircularProgress size={24} color="inherit" /> : "Start Quiz"}
+          {submitting ? <CircularProgress size={24} color="inherit" /> : "ابدأ"}
         </Button>
 
         {error && (

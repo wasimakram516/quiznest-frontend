@@ -75,7 +75,7 @@ export default function InstructionsPage() {
         sx={{
           position: "fixed",
           top: 20,
-          right: 20, // flipped for RTL
+          left: 20, 
           bgcolor: "primary.main",
           color: "white",
         }}

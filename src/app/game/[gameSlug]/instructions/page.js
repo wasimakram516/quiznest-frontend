@@ -91,7 +91,7 @@ export default function InstructionsPage() {
           width: "100%",
           textAlign: "center",
           backdropFilter: "blur(8px)",
-          backgroundColor: "rgba(255,255,255,0.3)",
+          backgroundColor: "rgba(255,255,255,0.5)",
           borderRadius: 4,
         }}
       >

@@ -1,6 +1,13 @@
 "use client";
 
-import { Box, Button, Container, Stack, Typography, Divider } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
+  Divider,
+} from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
@@ -22,8 +29,9 @@ export default function HomePage() {
 
       {/* Info */}
       <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
-        This platform is designed for businesses to engage users with interactive quizzes.
-        If you're a player, your admin will provide you with a game link to get started.
+        This platform is designed for businesses to engage users with
+        interactive quizzes. If you're a player, your admin will provide you
+        with a game link to get started.
       </Typography>
 
       <Button
@@ -44,13 +52,14 @@ export default function HomePage() {
           About WhiteWall
         </Typography>
 
-        <Image
+        <Box
+          component="img"
           src="/WWDS-logo.png"
           alt="WhiteWall Digital Solutions"
-          width={300}
-          height={70}
-          priority
-          style={{ maxWidth: "100%", height: "auto" }}
+          sx={{
+            width: 300,
+            height: "auto",
+          }}
         />
 
         <Typography variant="body1" color="text.secondary" textAlign="center">
@@ -62,7 +71,9 @@ export default function HomePage() {
 
         {/* Contact */}
         <Stack spacing={1} alignItems="center">
-          <Typography variant="h6" fontWeight="medium">Contact Us</Typography>
+          <Typography variant="h6" fontWeight="medium">
+            Contact Us
+          </Typography>
 
           <Typography variant="body2">
             <WhatsAppIcon fontSize="small" sx={{ mr: 1 }} />
@@ -71,7 +82,11 @@ export default function HomePage() {
 
           <Typography variant="body2">
             <InstagramIcon fontSize="small" sx={{ mr: 1 }} />
-            <a href="https://www.instagram.com/whitewall.om" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.instagram.com/whitewall.om"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               whitewall.om
             </a>
           </Typography>
@@ -83,7 +98,11 @@ export default function HomePage() {
 
           <Typography variant="body2">
             🌐{" "}
-            <a href="https://www.whitewall.om" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.whitewall.om"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               www.whitewall.om
             </a>
           </Typography>

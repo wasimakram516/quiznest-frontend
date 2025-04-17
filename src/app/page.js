@@ -20,7 +20,6 @@ export default function Home() {
       }}
     >
       <Container maxWidth="sm" sx={{ textAlign: "center" }}>
-        
         {/* Icon */}
         <DashboardIcon sx={{ fontSize: 60, color: "primary.main", mb: 2 }} />
 
@@ -47,13 +46,11 @@ export default function Home() {
         {/* Footer Branding */}
         {/* Brand Logo */}
         <Box sx={{ mt: 3 }}>
-          <Image
+          <Box
+            component="img"
             src="/WWDS-logo.png"
             alt="WhiteWall Digital Solutions"
-            width={200}
-            height={50}
-            priority
-            style={{ marginBottom: 8 }}
+            sx={{ width: 200, height: "auto", mb: 1 }}
           />
         </Box>
         <Typography
@@ -66,7 +63,11 @@ export default function Home() {
             href="https://www.whitewall.om/"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ textDecoration: "none", color: "#1976d2", fontWeight: 600 }}
+            style={{
+              textDecoration: "none",
+              color: "#1976d2",
+              fontWeight: 600,
+            }}
           >
             WhiteWall Digital Solutions, Oman
           </a>

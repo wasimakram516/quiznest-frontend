@@ -49,9 +49,10 @@ export default function Home() {
         <Box sx={{ mt: 3 }}>
           <Image
             src="/WWDS-logo.png"
-            alt="WhiteWall Technologies"
+            alt="WhiteWall Digital Solutions"
             width={200}
             height={50}
+            priority
             style={{ marginBottom: 8 }}
           />
         </Box>

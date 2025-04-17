@@ -46,9 +46,10 @@ export default function HomePage() {
 
         <Image
           src="/WWDS-logo.png"
-          alt="WhiteWall"
+          alt="WhiteWall Digital Solutions"
           width={300}
           height={70}
+          priority
           style={{ maxWidth: "100%", height: "auto" }}
         />
 

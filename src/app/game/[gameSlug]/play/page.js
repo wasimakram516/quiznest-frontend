@@ -311,7 +311,6 @@ export default function PlayPage() {
           elevation={4}
           sx={{
             width: "100%",
-            maxWidth: 800,
             p: 4,
             textAlign: "center",
             backdropFilter: "blur(6px)",
@@ -327,72 +326,70 @@ export default function PlayPage() {
           </Typography>
 
           <Grid
-  container
-  spacing={2}
-  justifyContent="center"
-  alignItems="stretch"
-  sx={{
-    mt: 2,
-    maxWidth: 500,
-    mx: "auto",
-  }}
->
-  {currentQuestion.answers.map((opt, i) => {
-    const isSelected = selected === i;
-    const isCorrect = i === currentQuestion.correctAnswerIndex;
-    const bg = isSelected
-      ? isCorrect
-        ? "#c8e6c9"
-        : "#ffcdd2"
-      : "#f5f5f5";
-
-    return (
-      <Grid
-        item
-        xs={6}
-        key={i}
-        sx={{
-          display: "flex",
-          minHeight:"300px",
-          maxWidth:"400px",
-          minWidth:"300px"
-        }}
-      >
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => handleSelect(i)}
-          sx={{
-            backgroundColor: bg,
-            fontWeight: "bold",
-            fontSize: "1rem",
-            borderRadius: 2,
-            textTransform: "none",
-            whiteSpace: "normal",
-            wordBreak: "break-word",
-            overflowWrap: "break-word",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            p: 2,
-          }}
-        >
-          <Box
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="stretch"
             sx={{
-              width: "100%",
+              mt: 2,
+              maxWidth:"800px",
+              mx: "auto",
             }}
           >
-            {String.fromCharCode(65 + i)}. {opt}
-          </Box>
-        </Button>
-      </Grid>
-    );
-  })}
-</Grid>
+            {currentQuestion.answers.map((opt, i) => {
+              const isSelected = selected === i;
+              const isCorrect = i === currentQuestion.correctAnswerIndex;
+              const bg = isSelected
+                ? isCorrect
+                  ? "#c8e6c9"
+                  : "#ffcdd2"
+                : "#f5f5f5";
 
-
+              return (
+                <Grid
+                  item
+                  xs={6}
+                  key={i}
+                  sx={{
+                    display: "flex",
+                    minHeight: "300px",
+                    maxWidth: "400px",
+                    minWidth: "300px",
+                  }}
+                >
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    onClick={() => handleSelect(i)}
+                    sx={{
+                      backgroundColor: bg,
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      borderRadius: 2,
+                      textTransform: "none",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      p: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "100%",
+                      }}
+                    >
+                      {String.fromCharCode(65 + i)}. {opt}
+                    </Box>
+                  </Button>
+                </Grid>
+              );
+            })}
+          </Grid>
 
           {showHint && currentQuestion.hint && (
             <Typography

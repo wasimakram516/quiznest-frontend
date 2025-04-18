@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QuizIcon from "@mui/icons-material/Quiz";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareGameModal from "@/app/components/ShareGameModal";
 
@@ -58,7 +59,7 @@ export default function GamesPage() {
       const data = await getGamesByBusiness(businessSlug);
       setGames(data);
       const res = await getBusinessBySlug(businessSlug);
-      setBusiness(res.data)
+      setBusiness(res.data);
     } catch (err) {
       showMessage(err, "error");
     } finally {
@@ -223,6 +224,7 @@ export default function GamesPage() {
                     display: "flex",
                     justifyContent: "space-between",
                     flexWrap: "wrap",
+                    gap:2
                   }}
                 >
                   <Button
@@ -232,11 +234,25 @@ export default function GamesPage() {
                     startIcon={<QuizIcon />}
                     onClick={() =>
                       router.push(
-                        `/cms/businesses/${businessSlug}/games/${g.slug}`
+                        `/cms/businesses/${businessSlug}/games/${g.slug}/questions`
                       )
                     }
                   >
                     Questions
+                  </Button>
+
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<LeaderboardIcon />}
+                    onClick={() =>
+                      router.push(
+                        `/cms/businesses/${businessSlug}/games/${g.slug}/results`
+                      )
+                    }
+                  >
+                    Results
                   </Button>
 
                   <Box sx={{ display: "flex", gap: 1, mt: { xs: 1, sm: 0 } }}>

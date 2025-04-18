@@ -74,14 +74,6 @@ export default function CmsDashboard() {
           color="#1976d2"
           route="/cms/businesses"
         />
-        <DashboardCard
-          title="Games"
-          description="Manage quiz games across businesses."
-          buttonLabel="All Games"
-          icon={<QuizIcon />}
-          color="#388e3c"
-          route="/cms"
-        />
       </Grid>
 
       <ConfirmationDialog

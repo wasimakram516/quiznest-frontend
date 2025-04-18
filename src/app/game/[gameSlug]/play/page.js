@@ -323,66 +323,76 @@ export default function PlayPage() {
             Question {questionIndex + 1} of {game.questions.length}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            {currentQuestion.question}
+            {currentQuestion?.question}
           </Typography>
 
           <Grid
-            container
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
+  container
+  spacing={2}
+  justifyContent="center"
+  alignItems="stretch"
+  sx={{
+    mt: 2,
+    maxWidth: 500,
+    mx: "auto",
+  }}
+>
+  {currentQuestion.answers.map((opt, i) => {
+    const isSelected = selected === i;
+    const isCorrect = i === currentQuestion.correctAnswerIndex;
+    const bg = isSelected
+      ? isCorrect
+        ? "#c8e6c9"
+        : "#ffcdd2"
+      : "#f5f5f5";
+
+    return (
+      <Grid
+        item
+        xs={6}
+        key={i}
+        sx={{
+          display: "flex",
+          minHeight:"300px",
+          maxWidth:"400px",
+          minWidth:"300px"
+        }}
+      >
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => handleSelect(i)}
+          sx={{
+            backgroundColor: bg,
+            fontWeight: "bold",
+            fontSize: "1rem",
+            borderRadius: 2,
+            textTransform: "none",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            overflowWrap: "break-word",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            p: 2,
+          }}
+        >
+          <Box
             sx={{
-              mt: 2,
-              maxWidth: 500,
-              mx: "auto",
+              width: "100%",
             }}
           >
-            {currentQuestion.answers.map((opt, i) => {
-              const isSelected = selected === i;
-              const isCorrect = i === currentQuestion.correctAnswerIndex;
-              const bg = isSelected
-                ? isCorrect
-                  ? "#c8e6c9"
-                  : "#ffcdd2"
-                : "#f5f5f5";
+            {String.fromCharCode(65 + i)}. {opt}
+          </Box>
+        </Button>
+      </Grid>
+    );
+  })}
+</Grid>
 
-              return (
-                <Grid item xs={6} key={i}>
-                  <Box
-                    sx={{
-                      width: "100%",
-                      aspectRatio: "1 / 1", // keep it square
-                      minWidth: 200, // optional: ensure decent size
-                      minHeight: 200,
-                    }}
-                  >
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      onClick={() => handleSelect(i)}
-                      sx={{
-                        backgroundColor: bg,
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        borderRadius: 2,
-                        textTransform: "none",
-                        whiteSpace: "normal",
-                        height: "100%",
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        p: 2,
-                      }}
-                    >
-                      {String.fromCharCode(65 + i)}. {opt}
-                    </Button>
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
+
 
           {showHint && currentQuestion.hint && (
             <Typography

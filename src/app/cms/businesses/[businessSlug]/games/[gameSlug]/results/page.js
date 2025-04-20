@@ -49,18 +49,19 @@ export default function ResultsPage() {
 
   const handleExport = async () => {
     try {
-      const res = await exportResults(game._id);
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const blob = await exportResults(game._id);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `${game.slug}-results.xlsx`);
       document.body.appendChild(link);
       link.click();
+      window.URL.revokeObjectURL(url); 
     } catch (err) {
       showMessage(err, "error");
     }
   };
-
+  
   useEffect(() => {
     if (gameSlug) fetchGameAndResults();
   }, [gameSlug]);
@@ -110,71 +111,94 @@ export default function ResultsPage() {
             {players.map((p, i) => (
               <Grid item xs={12} sm={6} md={4} key={p._id || i}>
                 <Box
-  sx={{
-    height: "100%",
-    p: 3,
-    borderRadius: 3,
-    background: "#fdfefe",
-    boxShadow: 2,
-    width:"350px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    transition: "0.3s ease",
-    "&:hover": {
-      boxShadow: 6,
-      transform: "translateY(-4px)",
-    },
-  }}
->
-  {/* Rank */}
-  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-    {i < 3 && (
-      <EmojiEventsIcon
-        color={i === 0 ? "warning" : i === 1 ? "secondary" : "info"}
-        sx={{ mr: 1 }}
-      />
-    )}
-    <Typography variant="h6" fontWeight="bold" color="primary.main" noWrap>
-      #{i + 1} • {p.name}
-    </Typography>
-  </Box>
+                  sx={{
+                    height: "100%",
+                    p: 3,
+                    borderRadius: 3,
+                    background: "#fdfefe",
+                    boxShadow: 2,
+                    width: "350px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    transition: "0.3s ease",
+                    "&:hover": {
+                      boxShadow: 6,
+                      transform: "translateY(-4px)",
+                    },
+                  }}
+                >
+                  {/* Rank */}
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    {i < 3 && (
+                      <EmojiEventsIcon
+                        color={
+                          i === 0 ? "warning" : i === 1 ? "secondary" : "info"
+                        }
+                        sx={{ mr: 1 }}
+                      />
+                    )}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="primary.main"
+                      noWrap
+                    >
+                      #{i + 1} • {p.name}
+                    </Typography>
+                  </Box>
 
-  {/* Details */}
-  <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-    {p.company && (
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <BusinessIcon fontSize="small" sx={{ mr: 1, color: "text.secondary" }} />
-        <Typography variant="body2" color="text.secondary" noWrap>
-          {p.company}
-        </Typography>
-      </Box>
-    )}
+                  {/* Details */}
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                  >
+                    {p.company && (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <BusinessIcon
+                          fontSize="small"
+                          sx={{ mr: 1, color: "text.secondary" }}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          noWrap
+                        >
+                          {p.company}
+                        </Typography>
+                      </Box>
+                    )}
 
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <ScoreIcon fontSize="small" sx={{ mr: 1, color: "primary.main" }} />
-      <Typography variant="body2">
-        Score: <strong>{p.score}</strong>
-      </Typography>
-    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <ScoreIcon
+                        fontSize="small"
+                        sx={{ mr: 1, color: "primary.main" }}
+                      />
+                      <Typography variant="body2">
+                        Score: <strong>{p.score}</strong>
+                      </Typography>
+                    </Box>
 
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <AccessTimeIcon fontSize="small" sx={{ mr: 1, color: "primary.main" }} />
-      <Typography variant="body2">
-        Time Taken: <strong>{p.timeTaken}s</strong>
-      </Typography>
-    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <AccessTimeIcon
+                        fontSize="small"
+                        sx={{ mr: 1, color: "primary.main" }}
+                      />
+                      <Typography variant="body2">
+                        Time Taken: <strong>{p.timeTaken}s</strong>
+                      </Typography>
+                    </Box>
 
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <EditNoteIcon fontSize="small" sx={{ mr: 1, color: "primary.main" }} />
-      <Typography variant="body2">
-        Attempted: <strong>{p.attemptedQuestions}</strong>
-      </Typography>
-    </Box>
-  </Box>
-
-</Box>
-
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <EditNoteIcon
+                        fontSize="small"
+                        sx={{ mr: 1, color: "primary.main" }}
+                      />
+                      <Typography variant="body2">
+                        Attempted: <strong>{p.attemptedQuestions}</strong>
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
               </Grid>
             ))}
           </Grid>

@@ -12,8 +12,6 @@ export const MessageProvider = ({ children }) => {
 
   const showMessage = (text, severity = "error") => {
     setMessage({ text, severity });
-
-    // Auto-hide after 5 seconds
     setTimeout(() => setMessage(null), 5000);
   };
 
@@ -23,7 +21,6 @@ export const MessageProvider = ({ children }) => {
     <MessageContext.Provider value={{ message, showMessage }}>
       {children}
 
-      {/* Notification Snackbar */}
       <Snackbar
         open={Boolean(message)}
         onClose={handleClose}
@@ -33,14 +30,12 @@ export const MessageProvider = ({ children }) => {
       >
         {message && (
           <Alert
-          variant="filled"
-          severity={message.severity}
-          onClose={handleClose}
-        >
-          {typeof message === "string"
-            ? message
-            : message?.message || message?.text || "An error occurred"}
-        </Alert>        
+            variant="filled"
+            severity={message.severity}
+            onClose={handleClose}
+          >
+            {message.text || "An error occurred"}
+          </Alert>        
         )}
       </Snackbar>
     </MessageContext.Provider>

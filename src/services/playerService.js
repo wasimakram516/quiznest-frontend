@@ -47,9 +47,7 @@ export const getLeaderboard = async (gameId) => {
 // ✅ Export player results (blob response)
 export const exportResults = async (gameId) => {
   try {
-    const response = await api.get(`/players/export/${gameId}`, {
-      responseType: "blob",
-    });
+    const response = await api.get(`/players/export/${gameId}`);
     return response;
   } catch (err) {
     handleError(err);

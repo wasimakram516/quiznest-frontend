@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,6 +7,7 @@ import {
   DialogActions,
   Button,
   Box,
+  CircularProgress,
 } from "@mui/material";
 
 const ConfirmationDialog = ({
@@ -17,10 +18,21 @@ const ConfirmationDialog = ({
   message,
   confirmButtonText,
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await onConfirm();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={loading ? null : onClose}
       PaperProps={{
         sx: {
           borderRadius: 2,
@@ -72,6 +84,7 @@ const ConfirmationDialog = ({
           onClick={onClose}
           variant="outlined"
           color="primary"
+          disabled={loading}
           sx={{
             fontWeight: "bold",
             textTransform: "uppercase",
@@ -81,17 +94,18 @@ const ConfirmationDialog = ({
           Cancel
         </Button>
         <Button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           variant="contained"
           color="error"
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={20} color="inherit" />}
           sx={{
             fontWeight: "bold",
             textTransform: "uppercase",
             padding: "0.5rem 2rem",
           }}
         >
-          {confirmButtonText || "Yes"}
-
+          {loading ? "Processing..." : confirmButtonText || "Yes"}
         </Button>
       </DialogActions>
     </Dialog>

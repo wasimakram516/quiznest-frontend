@@ -54,7 +54,7 @@ export default function HomePage() {
 
         <Box
           component="img"
-          src="/WWDS-logo.png"
+          src="/WWDS.png"
           alt="WhiteWall Digital Solutions"
           sx={{
             width: 300,

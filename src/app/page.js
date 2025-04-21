@@ -48,7 +48,7 @@ export default function Home() {
         <Box sx={{ mt: 3 }}>
           <Box
             component="img"
-            src="/WWDS-logo.png"
+            src="/WWDS.png"
             alt="WhiteWall Digital Solutions"
             sx={{ width: 200, height: "auto", mb: 1 }}
           />

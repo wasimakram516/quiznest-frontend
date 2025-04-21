@@ -68,7 +68,12 @@ export default function LoginPage() {
         </Typography>
 
         {/* Description */}
-        <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mb: 2 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          textAlign="center"
+          sx={{ mb: 2 }}
+        >
           Please enter your credentials to access the CMS dashboard.
         </Typography>
 
@@ -109,11 +114,17 @@ export default function LoginPage() {
             type="submit"
             variant="contained"
             size="large"
-            startIcon={!loading && <LoginIcon />}
+            startIcon={
+              loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <LoginIcon />
+              )
+            }
             disabled={loading}
             sx={{ mt: 1 }}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </Button>
         </Box>
       </Paper>

@@ -152,7 +152,7 @@ export default function ResultsPage() {
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                   >
-                    {p.company && (
+                    {/* {p.company && (
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <BusinessIcon
                           fontSize="small"
@@ -166,7 +166,7 @@ export default function ResultsPage() {
                           {p.company}
                         </Typography>
                       </Box>
-                    )}
+                    )} */}
 
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <ScoreIcon

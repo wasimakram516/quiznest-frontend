@@ -314,7 +314,7 @@ export default function PlayPage() {
             p: 4,
             textAlign: "center",
             backdropFilter: "blur(6px)",
-            backgroundColor: "rgba(255,255,255,0.95)",
+            backgroundColor: "rgba(255,255,255,0.5)",
             borderRadius: 4,
           }}
         >

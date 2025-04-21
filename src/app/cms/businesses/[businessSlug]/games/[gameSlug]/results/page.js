@@ -56,12 +56,12 @@ export default function ResultsPage() {
       link.setAttribute("download", `${game.slug}-results.xlsx`);
       document.body.appendChild(link);
       link.click();
-      window.URL.revokeObjectURL(url); 
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       showMessage(err, "error");
     }
   };
-  
+
   useEffect(() => {
     if (gameSlug) fetchGameAndResults();
   }, [gameSlug]);
@@ -195,6 +195,30 @@ export default function ResultsPage() {
                       />
                       <Typography variant="body2">
                         Attempted: <strong>{p.attemptedQuestions}</strong>
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <AccessTimeIcon
+                        fontSize="small"
+                        sx={{ mr: 1, color: "primary.main" }}
+                      />
+                      <Typography
+                        variant="body2"
+                        fontStyle="italic"
+                        fontSize="0.85rem"
+                      >
+                        Submitted At:{" "}
+                        <strong>
+                          {new Date(p.updatedAt).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </strong>
                       </Typography>
                     </Box>
                   </Box>

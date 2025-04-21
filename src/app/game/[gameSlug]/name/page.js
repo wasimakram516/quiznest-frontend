@@ -113,13 +113,13 @@ export default function NamePage() {
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
-        <TextField
+        {/* <TextField
           label="اسم الشركة"
           fullWidth
           sx={{ mb: 2 }}
           value={form.company}
           onChange={(e) => setForm({ ...form, company: e.target.value })}
-        />
+        /> */}
 
         <Button
           variant="contained"

@@ -14,6 +14,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useState, useEffect } from "react";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const QuestionFormModal = ({
   open,
@@ -63,14 +65,49 @@ const QuestionFormModal = ({
       setLoading(false);
     }
   };
+const { language } = useLanguage(); //Language Usage
 
+const questionDialogTranslations = {
+  en: {
+    editTitle: "Edit Question",
+    addTitle: "Add Question",
+    questionLabel: "Question",
+    optionLabel: "Option",
+    correctAnswerLabel: "Correct Answer",
+    hintLabel: "Hint (optional)",
+    cancelButton: "Cancel",
+    updateButton: "Update",
+    addButton: "Add",
+    updatingText: "Updating...",
+    addingText: "Adding...",
+    emptyOption: "(empty)",
+  },
+  ar: {
+    editTitle: "تعديل السؤال",
+    addTitle: "إضافة سؤال",
+    questionLabel: "السؤال",
+    optionLabel: "خيار",
+    correctAnswerLabel: "الإجابة الصحيحة",
+    hintLabel: "تلميح (اختياري)",
+    cancelButton: "إلغاء",
+    updateButton: "تحديث",
+    addButton: "إضافة",
+    updatingText: "جارٍ التحديث...",
+    addingText: "جارٍ الإضافة...",
+    emptyOption: "(فارغ)",
+  },
+};
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{editMode ? "Edit Question" : "Add Question"}</DialogTitle>
+      <DialogTitle>
+        {editMode
+          ? questionDialogTranslations[language].editTitle
+          : questionDialogTranslations[language].addTitle}
+      </DialogTitle>
 
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <TextField
-          label="Question"
+          label={questionDialogTranslations[language].questionLabel}
           name="question"
           value={form.question}
           onChange={handleChange}
@@ -81,7 +118,9 @@ const QuestionFormModal = ({
         {form.answers.map((ans, idx) => (
           <TextField
             key={idx}
-            label={`Option ${String.fromCharCode(65 + idx)}`}
+            label={`${
+              questionDialogTranslations[language].optionLabel
+            } ${String.fromCharCode(65 + idx)}`}
             value={ans}
             onChange={(e) => handleAnswerChange(idx, e.target.value)}
             fullWidth
@@ -90,7 +129,9 @@ const QuestionFormModal = ({
         ))}
 
         <FormControl fullWidth>
-          <InputLabel>Correct Answer</InputLabel>
+          <InputLabel>
+            {questionDialogTranslations[language].correctAnswerLabel}
+          </InputLabel>
           <Select
             value={form.correctAnswerIndex}
             onChange={(e) =>
@@ -99,18 +140,19 @@ const QuestionFormModal = ({
                 correctAnswerIndex: parseInt(e.target.value),
               }))
             }
-            label="Correct Answer"
+            label={questionDialogTranslations[language].correctAnswerLabel}
           >
             {form.answers.map((ans, i) => (
               <MenuItem key={i} value={i}>
-                {String.fromCharCode(65 + i)}. {ans || "(empty)"}
+                {String.fromCharCode(65 + i)}.{" "}
+                {ans || questionDialogTranslations[language].emptyOption}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
         <TextField
-          label="Hint (optional)"
+          label={questionDialogTranslations[language].hintLabel}
           name="hint"
           value={form.hint}
           onChange={handleChange}
@@ -120,7 +162,7 @@ const QuestionFormModal = ({
 
       <DialogActions sx={{ p: 3 }}>
         <Button variant="outlined" onClick={onClose} disabled={loading}>
-          Cancel
+          {questionDialogTranslations[language].cancelButton}
         </Button>
         <Button
           variant="contained"
@@ -130,11 +172,11 @@ const QuestionFormModal = ({
         >
           {loading
             ? editMode
-              ? "Updating..."
-              : "Adding..."
+              ? questionDialogTranslations[language].updatingText
+              : questionDialogTranslations[language].addingText
             : editMode
-            ? "Update"
-            : "Add"}
+            ? questionDialogTranslations[language].updateButton
+            : questionDialogTranslations[language].addButton}
         </Button>
       </DialogActions>
     </Dialog>

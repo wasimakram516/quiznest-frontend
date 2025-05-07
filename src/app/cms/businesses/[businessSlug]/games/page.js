@@ -35,6 +35,8 @@ import {
 import { useMessage } from "@/app/context/MessageContext";
 import BreadcrumbsNav from "@/app/components/BreadcrumbsNav";
 import { getBusinessBySlug } from "@/services/businessService";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function GamesPage() {
   const router = useRouter();
@@ -116,197 +118,270 @@ export default function GamesPage() {
       setGameToDelete(null);
     }
   };
+  const { language } = useLanguage(); //Language Usage
+  const gamesTranslations = {
+    en: {
+      // Header
+      gamesTitle: "Games for",
+      gamesDescription: "Manage all quiz games created for this business.",
+      createGameButton: "Create Game",
 
+      // Game card
+      slugLabel: "Slug:",
+      optionCountLabel: "Option Count:",
+      countdownTimerLabel: "Countdown Timer:",
+      quizTimeLabel: "Quiz Time:",
+      coverImageLabel: "Cover Image:",
+      nameImageLabel: "Name Image:",
+      backgroundImageLabel: "Background Image:",
+
+      // Buttons
+      questionsButton: "Questions",
+      resultsButton: "Results",
+
+      // Modals
+      deleteGameTitle: "Delete Game?",
+      deleteGameMessage: "Are you sure you want to delete",
+    },
+    ar: {
+      // Header
+      gamesTitle: "ألعاب لـ",
+      gamesDescription: ".إدارة جميع ألعاب الاختبارات المنشأة لهذا العمل",
+      createGameButton: "إنشاء لعبة",
+
+      // Game card
+      slugLabel: ":المعر",
+      optionCountLabel: ":عدد الخيارات",
+      countdownTimerLabel: ":عداد التنازلي",
+      quizTimeLabel: ":وقت الاختبار",
+      coverImageLabel: ":صورة الغلاف",
+      nameImageLabel: ":صورة الاسم",
+      backgroundImageLabel: ":صورة الخلفية",
+
+      // Buttons
+      questionsButton: "الأسئلة",
+      resultsButton: "النتائج",
+
+      // Modals
+      deleteGameTitle: "حذف اللعبة؟",
+      deleteGameMessage: "هل أنت متأكد أنك تريد حذف",
+    },
+  };
   return (
-    <Container maxWidth="lg" sx={{ mt: 6 }}>
-      <Box sx={{ mb: 4 }}>
-        <BreadcrumbsNav />
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            rowGap: 2,
-          }}
-        >
-          <Box>
-            <Typography variant="h5" fontWeight="bold">
-              Games for "{business?.name}"
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Manage all quiz games created for this business.
-            </Typography>
+    <Box sx={{ position: "relative", display: "inline-block" }}>
+      <LanguageSelector />
+      <Container maxWidth="lg" sx={{ mt: 6 }}>
+        <Box sx={{ mb: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2, // Add some margin below this row
+            }}
+          >
+            <BreadcrumbsNav />
           </Box>
 
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleOpenCreate}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              rowGap: 2,
+            }}
           >
-            Create Game
-          </Button>
+            <Box>
+              <Typography variant="h5" fontWeight="bold">
+                {gamesTranslations[language].gamesTitle} "{business?.name}"
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {gamesTranslations[language].gamesDescription}
+              </Typography>
+            </Box>
+
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleOpenCreate}
+            >
+              {gamesTranslations[language].createGameButton}
+            </Button>
+          </Box>
+
+          <Divider sx={{ mt: 2 }} />
         </Box>
 
-        <Divider sx={{ mt: 2 }} />
-      </Box>
-
-      {loading ? (
-        <Box sx={{ textAlign: "center", mt: 8 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {games.map((g) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={g._id}>
-              <Box
-                sx={{
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  p: 2,
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  bgcolor: "#fff",
-                }}
-              >
-                <Box>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {g.title}
-                  </Typography>
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ wordBreak: "break-word" }}
-                  >
-                    <strong>Slug:</strong> {g.slug}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <strong>Option Count:</strong> {g.choicesCount}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <strong>Countdown Timer:</strong> {g.countdownTimer} sec
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <strong>Quiz Time:</strong> {g.gameSessionTimer} sec
-                  </Typography>
-
-                  {["coverImage", "nameImage", "backgroundImage"].map(
-                    (imgKey) => (
-                      <Box key={imgKey} sx={{ mt: 1 }}>
-                        <Typography variant="caption" color="text.secondary">
-                          {imgKey.replace("Image", " Image")}:
-                        </Typography>
-                        <Box
-                          component="img"
-                          src={g[imgKey]}
-                          alt={imgKey}
-                          sx={{
-                            width: "100%",
-                            height: "auto",
-                            maxHeight: 140,
-                            objectFit: "cover",
-                            borderRadius: 1,
-                            mt: 0.5,
-                          }}
-                        />
-                      </Box>
-                    )
-                  )}
-                </Box>
-
+        {loading ? (
+          <Box sx={{ textAlign: "center", mt: 8 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {games.map((g) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={g._id}>
                 <Box
                   sx={{
-                    mt: 2,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    p: 2,
+                    height: "100%",
                     display: "flex",
+                    flexDirection: "column",
                     justifyContent: "space-between",
-                    flexWrap: "wrap",
-                    gap:2
+                    bgcolor: "#fff",
                   }}
                 >
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<QuizIcon />}
-                    onClick={() =>
-                      router.push(
-                        `/cms/businesses/${businessSlug}/games/${g.slug}/questions`
-                      )
-                    }
-                  >
-                    Questions
-                  </Button>
+                  <Box>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {g.title}
+                    </Typography>
 
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<LeaderboardIcon />}
-                    onClick={() =>
-                      router.push(
-                        `/cms/businesses/${businessSlug}/games/${g.slug}/results`
-                      )
-                    }
-                  >
-                    Results
-                  </Button>
-
-                  <Box sx={{ display: "flex", gap: 1, mt: { xs: 1, sm: 0 } }}>
-                    <IconButton color="info" onClick={() => handleOpenEdit(g)}>
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setGameToDelete(g);
-                        setConfirmOpen(true);
-                      }}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ wordBreak: "break-word" }}
                     >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton
+                      <strong>{gamesTranslations[language].slugLabel}</strong>{" "}
+                      {g.slug}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      <strong>
+                        {gamesTranslations[language].optionCountLabel}
+                      </strong>{" "}
+                      {g.choicesCount}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      <strong>
+                        {gamesTranslations[language].countdownTimerLabel}
+                      </strong>{" "}
+                      {g.countdownTimer} sec
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      <strong>
+                        {gamesTranslations[language].quizTimeLabel}
+                      </strong>{" "}
+                      {g.gameSessionTimer} sec
+                    </Typography>
+
+                    {["coverImage", "nameImage", "backgroundImage"].map(
+                      (imgKey) => (
+                        <Box key={imgKey} sx={{ mt: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            {gamesTranslations[language][`${imgKey}Label`]}:
+                          </Typography>
+                          <Box
+                            component="img"
+                            src={g[imgKey]}
+                            alt={imgKey}
+                            sx={{
+                              width: "100%",
+                              height: "auto",
+                              maxHeight: 140,
+                              objectFit: "cover",
+                              borderRadius: 1,
+                              mt: 0.5,
+                            }}
+                          />
+                        </Box>
+                      )
+                    )}
+                  </Box>
+
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      gap: 2,
+                    }}
+                  >
+                    <Button
+                      size="small"
+                      variant="outlined"
                       color="primary"
-                      onClick={() => {
-                        setGameToShare(g);
-                        setShareModalOpen(true);
-                      }}
+                      startIcon={<QuizIcon />}
+                      onClick={() =>
+                        router.push(
+                          `/cms/businesses/${businessSlug}/games/${g.slug}/questions`
+                        )
+                      }
                     >
-                      <ShareIcon fontSize="small" />
-                    </IconButton>
+                      {gamesTranslations[language].questionsButton}
+                    </Button>
+
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<LeaderboardIcon />}
+                      onClick={() =>
+                        router.push(
+                          `/cms/businesses/${businessSlug}/games/${g.slug}/results`
+                        )
+                      }
+                    >
+                      {gamesTranslations[language].resultsButton}
+                    </Button>
+
+                    <Box sx={{ display: "flex", gap: 1, mt: { xs: 1, sm: 0 } }}>
+                      <IconButton
+                        color="info"
+                        onClick={() => handleOpenEdit(g)}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setGameToDelete(g);
+                          setConfirmOpen(true);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        color="primary"
+                        onClick={() => {
+                          setGameToShare(g);
+                          setShareModalOpen(true);
+                        }}
+                      >
+                        <ShareIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+              </Grid>
+            ))}
+          </Grid>
+        )}
 
-      <ShareGameModal
-        open={shareModalOpen}
-        onClose={() => setShareModalOpen(false)}
-        gameSlug={gameToShare?.slug}
-      />
+        <ShareGameModal
+          open={shareModalOpen}
+          onClose={() => setShareModalOpen(false)}
+          gameSlug={gameToShare?.slug}
+        />
 
-      <GameFormModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        editMode={editMode}
-        initialValues={selectedGame || {}}
-        selectedGame={selectedGame || null}
-        onSubmit={handleSubmitGame}
-      />
+        <GameFormModal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          editMode={editMode}
+          initialValues={selectedGame || {}}
+          selectedGame={selectedGame || null}
+          onSubmit={handleSubmitGame}
+        />
 
-      <ConfirmationDialog
-        open={confirmOpen}
-        title="Delete Game?"
-        message={`Are you sure you want to delete "${gameToDelete?.title}"?`}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={handleDeleteGame}
-      />
-    </Container>
+        <ConfirmationDialog
+          open={confirmOpen}
+          title={gamesTranslations[language].deleteGameTitle}
+          message={`${gamesTranslations[language].deleteGameMessage} "${gameToDelete?.title}"?`}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={handleDeleteGame}
+        />
+      </Container>
+    </Box>
   );
 }

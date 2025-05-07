@@ -10,7 +10,7 @@ import {
   Button,
   CircularProgress,
   IconButton,
-  Divider
+  Divider,
 } from "@mui/material";
 
 import BusinessIcon from "@mui/icons-material/Business";
@@ -32,6 +32,8 @@ import {
 
 import { useMessage } from "@/app/context/MessageContext";
 import BreadcrumbsNav from "@/app/components/BreadcrumbsNav";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function BusinessesPage() {
   const router = useRouter();
@@ -47,6 +49,7 @@ export default function BusinessesPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [businessToDelete, setBusinessToDelete] = useState(null);
 
+  const { language } = useLanguage(); //Language Usage
   const fetchBusinesses = async () => {
     try {
       const data = await getBusinesses();
@@ -102,157 +105,210 @@ export default function BusinessesPage() {
       setBusinessToDelete(null);
     }
   };
-
+  //Translations
+  const businessTranslations = {
+    en: {
+      allBusinessesTitle: "All Businesses",
+      allBusinessesDescription:
+        "Manage organizations and configure their associated quiz games.",
+      createBusinessButton: "Create Business",
+      slugLabel: "Slug:",
+      descriptionLabel: "Description:",
+      viewGamesButton: "View Games",
+      deleteBusinessTitle: "Delete Business?",
+      deleteBusinessMessage: "Are you sure you want to delete",
+    },
+    ar: {
+      allBusinessesTitle: "جميع الأعمال",
+      allBusinessesDescription:
+        "إدارة المؤسسات وتكوين ألعاب الاختبارات المرتبطة بها",
+      createBusinessButton: "إنشاء عمل",
+      slugLabel: "المعرف:",
+      descriptionLabel: "الوصف:",
+      viewGamesButton: "عرض الألعاب",
+      deleteBusinessTitle: "حذف العمل؟",
+      deleteBusinessMessage: "هل أنت متأكد أنك تريد حذف",
+    },
+  };
   return (
-    <Container maxWidth="lg" sx={{ mt: 6 }}>
-      <Box sx={{ mb: 4 }}>
-  <BreadcrumbsNav />
+    <Box sx={{ position: "relative" }}>
+      <LanguageSelector />
+      <Container maxWidth="lg" sx={{ mt: 6 }}>
+        <Box sx={{ mb: 4 }}>
+          {/* Header row with breadcrumbs and language selector */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2, // Add some margin below this row
+            }}
+          >
+            <BreadcrumbsNav />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              rowGap: 2,
+            }}
+          >
+            <Box>
+              <Typography variant="h5" fontWeight="bold">
+                {businessTranslations[language].allBusinessesTitle}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {businessTranslations[language].allBusinessesDescription}
+              </Typography>
+            </Box>
 
-  <Box
-    sx={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      flexWrap: "wrap",
-      rowGap: 2,
-    }}
-  >
-    <Box>
-      <Typography variant="h5" fontWeight="bold">
-        All Businesses
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Manage organizations and configure their associated quiz games.
-      </Typography>
-    </Box>
-
-    <Button
-      variant="contained"
-      startIcon={<AddBusinessIcon />}
-      onClick={handleOpenCreate}
-    >
-      Create Business
-    </Button>
-  </Box>
-
-  <Divider sx={{ mt: 2 }} />
-</Box>
-
-
-      {loading ? (
-        <Box sx={{ textAlign: "center", mt: 8 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {businesses.map((b) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={b._id}>
-            <Box
-              sx={{
-                borderRadius: 2,
-                boxShadow: 3,
-                p: 2,
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                bgcolor: "#fff",
-              }}
+            <Button
+              variant="contained"
+              startIcon={<AddBusinessIcon />}
+              onClick={handleOpenCreate}
             >
-              <Box>
+              {businessTranslations[language].createBusinessButton}
+            </Button>
+          </Box>
+
+          <Divider sx={{ mt: 2 }} />
+        </Box>
+
+        {loading ? (
+          <Box sx={{ textAlign: "center", mt: 8 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {businesses.map((b) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={b._id}>
                 <Box
                   sx={{
-                    width: "100%",
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    p: 2,
+                    height: "100%",
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    mb: 2,
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    bgcolor: "#fff",
                   }}
                 >
-                  {b.logoUrl ? (
+                  <Box>
                     <Box
-                      component="img"
-                      src={b.logoUrl}
-                      alt={`${b.name} logo`}
                       sx={{
-                        maxHeight: 80,
-                        objectFit: "contain",
                         width: "100%",
-                        borderRadius: 1,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        mb: 2,
                       }}
-                    />
-                  ) : (
-                    <BusinessIcon sx={{ fontSize: 48 }} />
-                  )}
-                </Box>
-          
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  {b.name}
-                </Typography>
-          
-                <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word" }}>
-                  <strong>Slug:</strong> {b.slug}
-                </Typography>
-          
-                <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word" }}>
-                  <strong>Description:</strong> {b.description || "—"}
-                </Typography>
-              </Box>
-          
-              <Box
-                sx={{
-                  mt: 2,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                }}
-              >
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<VisibilityIcon />}
-                  onClick={() => router.push(`/cms/businesses/${b.slug}/games`)}
-                >
-                  View Games
-                </Button>
-          
-                <Box sx={{ display: "flex", gap: 1, mt: { xs: 1, sm: 0 } }}>
-                  <IconButton color="info" onClick={() => handleOpenEdit(b)}>
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      setBusinessToDelete(b);
-                      setConfirmOpen(true);
+                    >
+                      {b.logoUrl ? (
+                        <Box
+                          component="img"
+                          src={b.logoUrl}
+                          alt={`${b.name} logo`}
+                          sx={{
+                            maxHeight: 80,
+                            objectFit: "contain",
+                            width: "100%",
+                            borderRadius: 1,
+                          }}
+                        />
+                      ) : (
+                        <BusinessIcon sx={{ fontSize: 48 }} />
+                      )}
+                    </Box>
+
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {b.name}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ wordBreak: "break-word" }}
+                    >
+                      <strong>
+                        {businessTranslations[language].slugLabel}
+                      </strong>{" "}
+                      {b.slug}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ wordBreak: "break-word" }}
+                    >
+                      <strong>
+                        {businessTranslations[language].descriptionLabel}
+                      </strong>{" "}
+                      {b.description || "—"}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
                     }}
                   >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-              </Box>
-            </Box>
-          </Grid>
-          
-          ))}
-        </Grid>
-      )}
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<VisibilityIcon />}
+                      onClick={() =>
+                        router.push(`/cms/businesses/${b.slug}/games`)
+                      }
+                    >
+                      {businessTranslations[language].viewGamesButton}
+                    </Button>
 
-      <BusinessFormModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        editMode={editMode}
-        initialValues={selectedBusiness || {}}
-        onSubmit={handleSubmitBusiness}
-      />
-      <ConfirmationDialog
-        open={confirmOpen}
-        title="Delete Business?"
-        message={`Are you sure you want to delete "${businessToDelete?.name}"?`}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={handleDeleteBusiness}
-      />
-    </Container>
+                    <Box sx={{ display: "flex", gap: 1, mt: { xs: 1, sm: 0 } }}>
+                      <IconButton
+                        color="info"
+                        onClick={() => handleOpenEdit(b)}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setBusinessToDelete(b);
+                          setConfirmOpen(true);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+
+        <BusinessFormModal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          editMode={editMode}
+          initialValues={selectedBusiness || {}}
+          onSubmit={handleSubmitBusiness}
+        />
+        <ConfirmationDialog
+          open={confirmOpen}
+          title={businessTranslations[language].deleteBusinessTitle}
+          message={`${businessTranslations[language].deleteBusinessMessage}"${businessToDelete?.name}"?`}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={handleDeleteBusiness}
+        />
+      </Container>
+    </Box>
   );
 }

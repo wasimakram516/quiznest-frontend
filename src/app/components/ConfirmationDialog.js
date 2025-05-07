@@ -9,6 +9,8 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const ConfirmationDialog = ({
   open,
@@ -28,7 +30,19 @@ const ConfirmationDialog = ({
       setLoading(false);
     }
   };
-
+  const { language } = useLanguage(); //Language Usage
+   const confirmationDialogTranslations = {
+     en: {
+       cancelButton: "Cancel",
+       confirmButton: "Yes",
+       processingText: "Processing...",
+     },
+     ar: {
+       cancelButton: "إلغاء",
+       confirmButton: "نعم",
+       processingText: "جاري المعالجة...",
+     },
+   };
   return (
     <Dialog
       open={open}
@@ -91,7 +105,7 @@ const ConfirmationDialog = ({
             padding: "0.5rem 2rem",
           }}
         >
-          Cancel
+          {confirmationDialogTranslations[language].cancelButton}
         </Button>
         <Button
           onClick={handleConfirm}
@@ -105,7 +119,10 @@ const ConfirmationDialog = ({
             padding: "0.5rem 2rem",
           }}
         >
-          {loading ? "Processing..." : confirmButtonText || "Yes"}
+          {loading
+            ? confirmationDialogTranslations[language].processingText
+            : confirmButtonText ||
+              confirmationDialogTranslations[language].confirmButton}
         </Button>
       </DialogActions>
     </Dialog>

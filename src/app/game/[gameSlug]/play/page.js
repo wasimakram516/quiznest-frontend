@@ -13,6 +13,8 @@ import { useGame } from "@/app/context/GameContext";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { submitResult } from "@/services/playerService";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function PlayPage() {
   const { game, loading } = useGame();
@@ -92,6 +94,29 @@ export default function PlayPage() {
       attemptedQuestions: attemptedRef.current,
       timeTaken: game.gameSessionTimer - timeLeftRef.current,
     });
+  };
+  const { language } = useLanguage(); //Language Usage
+  const gameTranslations = {
+    en: {
+      countdown: "sec",
+      question: "Question",
+      of: "of",
+      hint: "Hint",
+      thankYou: "Thank you,",
+      score: "Score",
+      attempted: "Attempted",
+      playAgain: "Play Again",
+    },
+    ar: {
+      countdown: "ثانية",
+      question: "سؤال",
+      of: "من",
+      hint: "تلميح",
+      thankYou: "شكراً لك",
+      score: "النقاط",
+      attempted: "محاولات",
+      playAgain: "العب مرة أخرى",
+    },
   };
 
   const handleSelect = (i) => {
@@ -221,20 +246,20 @@ export default function PlayPage() {
             }}
           >
             <Typography variant="h4" fontWeight="bold" mb={2}>
-              Thank you, {playerInfo.name}!
+              {gameTranslations[language].thankYou}, {playerInfo.name}!
             </Typography>
             <Typography variant="h2" mb={1}>
-              Score: {score}
+              {gameTranslations[language].score}: {score}
             </Typography>
             <Typography variant="h6" mb={3}>
-              Attempted: {attempted}
+              {gameTranslations[language].attempted}: {attempted}
             </Typography>
             <Button
               variant="contained"
               color="secondary"
               onClick={() => router.push(`/game/${game.slug}/name`)}
             >
-              Play Again
+              {gameTranslations[language].playAgain}
             </Button>
           </Paper>
         </Fade>
@@ -243,164 +268,168 @@ export default function PlayPage() {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        width: "100vw",
-        backgroundImage: `url(${game.backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-        px: 2,
-        py: 6,
-      }}
-    >
+    <Box sx={{ position: "relative" }}>
+      <LanguageSelector />
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          gap: 1,
-          position: "absolute",
-          top: { xs: 20, sm: 40 },
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <Typography
-          variant="h1"
-          sx={{
-            fontSize: { xs: "4rem", sm: "6rem", md: "8rem" },
-            fontWeight: "bold",
-            color: "secondary.main",
-            textShadow: "0 0 15px rgba(255,255,255,0.6)",
-            lineHeight: 1,
-          }}
-        >
-          {timeLeft}
-        </Typography>
-        <Typography
-          variant="h6"
-          sx={{
-            fontSize: { xs: "1rem", sm: "1.5rem" },
-            color: "#000",
-            fontStyle: "italic",
-            opacity: 0.7,
-            mb: { xs: "0.4rem", sm: "0.6rem" }, // slight bottom align
-          }}
-        >
-          sec
-        </Typography>
-      </Box>
-
-      <Box
-        sx={{
-          height: "100vh",
+          minHeight: "100vh",
           width: "100vw",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          px: 2, // some padding on small screens
           backgroundImage: `url(${game.backgroundImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: "fixed",
+          px: 2,
+          py: 6,
         }}
       >
-        <Paper
-          elevation={4}
+        <Box
           sx={{
-            width: "100%",
-            p: 4,
-            textAlign: "center",
-            backdropFilter: "blur(6px)",
-            backgroundColor: "rgba(255,255,255,0.5)",
-            borderRadius: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            gap: 1,
+            position: "absolute",
+            top: { xs: 20, sm: 40 },
+            left: "50%",
+            transform: "translateX(-50%)",
           }}
         >
-          <Typography variant="h5" gutterBottom fontWeight="bold">
-            Question {questionIndex + 1} of {game.questions.length}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            {currentQuestion?.question}
-          </Typography>
-
-          <Grid
-            container
-            spacing={2}
-            justifyContent="center"
-            alignItems="stretch"
+          <Typography
+            variant="h1"
             sx={{
-              mt: 2,
-              maxWidth:"800px",
-              mx: "auto",
+              fontSize: { xs: "4rem", sm: "6rem", md: "8rem" },
+              fontWeight: "bold",
+              color: "secondary.main",
+              textShadow: "0 0 15px rgba(255,255,255,0.6)",
+              lineHeight: 1,
             }}
           >
-            {currentQuestion.answers.map((opt, i) => {
-              const isSelected = selected === i;
-              const isCorrect = i === currentQuestion.correctAnswerIndex;
-              const bg = isSelected
-                ? isCorrect
-                  ? "#c8e6c9"
-                  : "#ffcdd2"
-                : "#f5f5f5";
+            {timeLeft}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: { xs: "1rem", sm: "1.5rem" },
+              color: "#000",
+              fontStyle: "italic",
+              opacity: 0.7,
+              mb: { xs: "0.4rem", sm: "0.6rem" }, // slight bottom align
+            }}
+          >
+            {gameTranslations[language].countdown}
+          </Typography>
+        </Box>
 
-              return (
-                <Grid
-                  item
-                  xs={6}
-                  key={i}
-                  sx={{
-                    display: "flex",
-                    minHeight: "300px",
-                    maxWidth: "400px",
-                    minWidth: "300px",
-                  }}
-                >
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={() => handleSelect(i)}
+        <Box
+          sx={{
+            height: "100vh",
+            width: "100vw",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            px: 2, // some padding on small screens
+            backgroundImage: `url(${game.backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+          }}
+        >
+          <Paper
+            elevation={4}
+            sx={{
+              width: "100%",
+              p: 4,
+              textAlign: "center",
+              backdropFilter: "blur(6px)",
+              backgroundColor: "rgba(255,255,255,0.5)",
+              borderRadius: 4,
+            }}
+          >
+            <Typography variant="h5" gutterBottom fontWeight="bold">
+              {gameTranslations[language].question} {questionIndex + 1}{" "}
+              {gameTranslations[language].of} {game.questions.length}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              {currentQuestion?.question}
+            </Typography>
+
+            <Grid
+              container
+              spacing={2}
+              justifyContent="center"
+              alignItems="stretch"
+              sx={{
+                mt: 2,
+                maxWidth: "800px",
+                mx: "auto",
+              }}
+            >
+              {currentQuestion.answers.map((opt, i) => {
+                const isSelected = selected === i;
+                const isCorrect = i === currentQuestion.correctAnswerIndex;
+                const bg = isSelected
+                  ? isCorrect
+                    ? "#c8e6c9"
+                    : "#ffcdd2"
+                  : "#f5f5f5";
+
+                return (
+                  <Grid
+                    item
+                    xs={6}
+                    key={i}
                     sx={{
-                      backgroundColor: bg,
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      borderRadius: 2,
-                      textTransform: "none",
-                      whiteSpace: "normal",
-                      wordBreak: "break-word",
-                      overflowWrap: "break-word",
-                      height: "100%",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      p: 2,
+                      minHeight: "300px",
+                      maxWidth: "400px",
+                      minWidth: "300px",
                     }}
                   >
-                    <Box
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      onClick={() => handleSelect(i)}
                       sx={{
-                        width: "100%",
+                        backgroundColor: bg,
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        borderRadius: 2,
+                        textTransform: "none",
+                        whiteSpace: "normal",
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
+                        p: 2,
                       }}
                     >
-                      {String.fromCharCode(65 + i)}. {opt}
-                    </Box>
-                  </Button>
-                </Grid>
-              );
-            })}
-          </Grid>
+                      <Box
+                        sx={{
+                          width: "100%",
+                        }}
+                      >
+                        {opt}
+                      </Box>
+                    </Button>
+                  </Grid>
+                );
+              })}
+            </Grid>
 
-          {showHint && currentQuestion.hint && (
-            <Typography
-              variant="body2"
-              color="error"
-              sx={{ mt: 3, fontStyle: "italic" }}
-            >
-              Hint: {currentQuestion.hint}
-            </Typography>
-          )}
-        </Paper>
+            {showHint && currentQuestion.hint && (
+              <Typography
+                variant="body2"
+                color="error"
+                sx={{ mt: 3, fontStyle: "italic" }}
+              >
+                {gameTranslations[language].hint}: {currentQuestion.hint}
+              </Typography>
+            )}
+          </Paper>
+        </Box>
       </Box>
     </Box>
   );

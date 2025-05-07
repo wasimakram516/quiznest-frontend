@@ -7,13 +7,15 @@ import {
   Button,
   Paper,
   CircularProgress,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useGame } from "@/app/context/GameContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { joinGame } from "@/services/playerService";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function NamePage() {
   const { game, loading } = useGame();
@@ -34,7 +36,6 @@ export default function NamePage() {
       localStorage.setItem("playerId", response.playerId);
 
       router.push(`/game/${game.slug}/instructions`);
-
     } catch (err) {
       setError(err);
     } finally {
@@ -58,62 +59,74 @@ export default function NamePage() {
       </Box>
     );
   }
-
+  const { language } = useLanguage(); //Language Usage
+  const entryDialogTranslations = {
+    en: {
+      nameLabel: "Name",
+      startButton: "Start",
+    },
+    ar: {
+      nameLabel: "الاسم",
+      startButton: "ابدأ",
+    },
+  };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        width: "100vw",
-        backgroundImage: `url(${game.nameImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-        position:"absolute",
-        px: 2,
-      }}
-    >
+    <Box sx={{ position: "relative" }}>
+      <LanguageSelector />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          width: "100vw",
+          backgroundImage: `url(${game.nameImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+          position: "absolute",
+          px: 2,
+        }}
+      >
         {/* Back Button */}
-      <IconButton
-        onClick={() => router.push(`/game/${game.slug}`)}
-        sx={{
-          position: "fixed",
-          top: 20,
-          left: 20,
-          bgcolor: "primary.main",
-          color: "white",
-        }}
-      >
-        <ArrowBackIcon />
-      </IconButton>
+        <IconButton
+          onClick={() => router.push(`/game/${game.slug}`)}
+          sx={{
+            position: "fixed",
+            top: 20,
+            left: 20,
+            bgcolor: "primary.main",
+            color: "white",
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
 
-      <Paper
-        elevation={4}
-        sx={{
-          p: 4,
-          width: "100%",
-          maxWidth: 500,
-          textAlign: "center",
-          backdropFilter: "blur(6px)",
-          backgroundColor: "rgba(255,255,255,0.5)",
-        }}
-      >
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
-          {game.title}
-        </Typography>
+        <Paper
+          elevation={4}
+          sx={{
+            p: 4,
+            width: "100%",
+            maxWidth: 500,
+            textAlign: "center",
+            backdropFilter: "blur(6px)",
+            backgroundColor: "rgba(255,255,255,0.5)",
+          }}
+        >
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            {game.title}
+          </Typography>
 
-        <TextField
-          label="الاسم"
-          fullWidth
-          required
-          sx={{ my: 2 }}
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        {/* <TextField
+          <TextField
+            label={entryDialogTranslations[language].nameLabel}
+            fullWidth
+            required
+            sx={{ my: 2 }}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+          {/* <TextField
           label="اسم الشركة"
           fullWidth
           sx={{ mb: 2 }}
@@ -121,29 +134,34 @@ export default function NamePage() {
           onChange={(e) => setForm({ ...form, company: e.target.value })}
         /> */}
 
-        <Button
-          variant="contained"
-          size="large"
-          fullWidth
-          onClick={handleSubmit}
-          disabled={submitting}
-          sx={{
-            px: 4,
-            py: 1.5,
-            fontSize: "1rem",
-            fontWeight: "bold",
-            borderRadius: "30px",
-          }}
-        >
-          {submitting ? <CircularProgress size={24} color="inherit" /> : "ابدأ"}
-        </Button>
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth
+            onClick={handleSubmit}
+            disabled={submitting}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontSize: "1rem",
+              fontWeight: "bold",
+              borderRadius: "30px",
+            }}
+          >
+            {submitting ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              entryDialogTranslations[language].startButton
+            )}
+          </Button>
 
-        {error && (
-          <Typography variant="caption" color="error" sx={{ mt: 1 }}>
-            {error}
-          </Typography>
-        )}
-      </Paper>
+          {error && (
+            <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+        </Paper>
+      </Box>
     </Box>
   );
 }

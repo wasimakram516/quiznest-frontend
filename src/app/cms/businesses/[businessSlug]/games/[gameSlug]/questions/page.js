@@ -43,6 +43,9 @@ import QuestionFormModal from "@/app/components/QuestionFormModal";
 import ConfirmationDialog from "@/app/components/ConfirmationDialog";
 import { useMessage } from "@/app/context/MessageContext";
 
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
+
 export default function QuestionsPage() {
   const { businessSlug, gameSlug } = useParams();
   const { showMessage } = useMessage();
@@ -131,269 +134,375 @@ export default function QuestionsPage() {
     }
   };
 
+  const { language } = useLanguage(); //Language Usage
+  const questionsTranslations = {
+    en: {
+      // Header
+      questionsTitle: 'Questions for "{gameTitle}" game',
+      questionsDescription:
+        "Choices per question: <strong>{choicesCount}</strong> | Countdown: <strong>{countdownTimer}s</strong> | Quiz Time: <strong>{gameSessionTimer}s</strong>",
+
+      // Buttons
+      downloadTemplate: "Download Template",
+      uploadQuestions: "Upload Questions (.xlsx)",
+      addQuestion: "Add Question",
+
+      // Question card
+      questionLabel: "Question:",
+      optionsLabel: "Options:",
+      correctAnswerLabel: "Correct Answer:",
+      hintLabel: "Hint:",
+
+      // Modals
+      deleteQuestionTitle: "Delete Question?",
+      deleteQuestionMessage: "Are you sure you want to delete this question?",
+      downloadTemplateTitle: "Download Template",
+      numberOptionsLabel: "Number of Options",
+      includeHintLabel: "Include Hint Column",
+      cancelButton: "Cancel",
+      downloadButton: "Download",
+
+      // Tooltips
+      editTooltip: "Edit",
+      deleteTooltip: "Delete",
+    },
+    ar: {
+      // Header
+      questionsTitle: 'أسئلة لعبة "{gameTitle}"',
+      questionsDescription:
+        "خيارات لكل سؤال: <strong>{choicesCount}</strong> | العد التنازلي: <strong>{countdownTimer}ثانية</strong> | وقت الاختبار: <strong>{gameSessionTimer}ثانية</strong>",
+
+      // Buttons
+      downloadTemplate: "تحميل القالب",
+      uploadQuestions: "رفع الأسئلة (.xlsx)",
+      addQuestion: "إضافة سؤال",
+
+      // Question card
+      questionLabel: "السؤال:",
+      optionsLabel: "الخيارات:",
+      correctAnswerLabel: "الإجابة الصحيحة:",
+      hintLabel: "تلميح:",
+
+      // Modals
+      deleteQuestionTitle: "حذف السؤال؟",
+      deleteQuestionMessage: "هل أنت متأكد أنك تريد حذف هذا السؤال؟",
+      downloadTemplateTitle: "تحميل القالب",
+      numberOptionsLabel: "عدد الخيارات",
+      includeHintLabel: "تضمين عمود التلميح",
+      cancelButton: "إلغاء",
+      downloadButton: "تحميل",
+
+      // Tooltips
+      editTooltip: "تعديل",
+      deleteTooltip: "حذف",
+    },
+  };
   return (
-    <Container maxWidth="lg" sx={{ mt: 6 }}>
-      {loading ? (
-        <Box sx={{ textAlign: "center", mt: 8 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 4,
-              flexWrap: "wrap",
-              gap: 2,
-              width: "100%",
-            }}
-          >
-            <Box sx={{ mb: 4, width: "100%" }}>
-              <BreadcrumbsNav />
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  flexWrap: "wrap",
-                  rowGap: 2,
-                }}
-              >
-                <Box>
-                  <Typography variant="h5" fontWeight="bold">
-                    Questions for "{game?.title}" game
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Choices per question: <strong>{game?.choicesCount}</strong>{" "}
-                    | Countdown: <strong>{game?.countdownTimer}s</strong> | Quiz
-                    Time: <strong>{game?.gameSessionTimer}s</strong>
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Divider sx={{ mt: 2 }} />
-            </Box>
+    <Box sx={{ position: "relative" }}>
+      <LanguageSelector />
+      <Container maxWidth="lg" sx={{ mt: 6 }}>
+        {loading ? (
+          <Box sx={{ textAlign: "center", mt: 8 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                mb: 4,
                 flexWrap: "wrap",
                 gap: 2,
-                mb: 2,
                 width: "100%",
               }}
             >
-              {/* Left Side: Download + Upload */}
-              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                <Button
-                  variant="outlined"
-                  startIcon={<DownloadIcon />}
-                  onClick={() => setDownloadModalOpen(true)}
-                >
-                  Download Template
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  component="label"
-                  startIcon={<UploadFileIcon />}
-                >
-                  Upload Questions (.xlsx)
-                  <input
-                    hidden
-                    type="file"
-                    accept=".xlsx"
-                    onChange={handleUpload}
-                  />
-                </Button>
-              </Box>
-
-              {/* Right Side: Add Button aligned right */}
-              <Box sx={{ ml: "auto" }}>
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  onClick={() => {
-                    setEditMode(false);
-                    setSelectedQuestion(null);
-                    setOpenModal(true);
-                  }}
-                >
-                  Add Question
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-
-          <Grid container spacing={3}>
-            {questions?.map((q, idx) => (
-              <Grid item xs={12} sm={6} md={4} key={q._id || idx}>
+              <Box sx={{ mb: 4, width: "100%" }}>
+                {/* Header row with breadcrumbs and language selector */}
                 <Box
                   sx={{
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    p: 2,
-                    bgcolor: "#fff",
                     display: "flex",
-                    flexDirection: "column",
                     justifyContent: "space-between",
-                    minHeight: 300, // ensures consistent height
+                    alignItems: "center",
+                    mb: 2, // Add some margin below this row
+                  }}
+                >
+                  <BreadcrumbsNav />
+                 
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    flexWrap: "wrap",
+                    rowGap: 2,
                   }}
                 >
                   <Box>
-                    <Typography
-                      variant="subtitle1"
-                      fontWeight="bold"
-                      gutterBottom
-                    >
-                      Q{idx + 1}
+                    <Typography variant="h5" fontWeight="bold">
+                      {questionsTranslations[language].questionsTitle.replace(
+                        "{gameTitle}",
+                        game?.title
+                      )}
                     </Typography>
-
-                    <Typography variant="body1" sx={{ mb: 1 }}>
-                      <strong>Question:</strong> {q.question}
-                    </Typography>
-
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        fontWeight="bold"
-                        sx={{ mb: 0.5 }}
-                      >
-                        Options:
-                      </Typography>
-                      {q.answers.map((a, i) => (
-                        <Typography
-                          key={i}
-                          variant="body2"
-                          sx={{
-                            color:
-                              i === q.correctAnswerIndex
-                                ? "green"
-                                : "text.secondary",
-                          }}
-                        >
-                          {String.fromCharCode(65 + i)}. {a}
-                        </Typography>
-                      ))}
-                    </Box>
-
-                    <Typography variant="body2" sx={{ mt: 1 }}>
-                      <strong>Correct Answer:</strong>{" "}
-                      <span style={{ color: "green" }}>
-                        {String.fromCharCode(65 + q.correctAnswerIndex)}.{" "}
-                        {q.answers[q.correctAnswerIndex]}
-                      </span>
-                    </Typography>
-
-                    {q.hint && (
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ mt: 1, display: "block" }}
-                      >
-                        <strong>Hint:</strong> {q.hint}
-                      </Typography>
-                    )}
-                  </Box>
-
-                  <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-                    <Tooltip title="Edit">
-                      <IconButton
-                        color="info"
-                        onClick={() => {
-                          setSelectedQuestion(q);
-                          setEditMode(true);
-                          setOpenModal(true);
+                    <Typography variant="body2" color="text.secondary">
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: questionsTranslations[
+                            language
+                          ].questionsDescription
+                            .replace("{choicesCount}", game?.choicesCount)
+                            .replace("{countdownTimer}", game?.countdownTimer)
+                            .replace(
+                              "{gameSessionTimer}",
+                              game?.gameSessionTimer
+                            ),
                         }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <IconButton
-                        color="error"
-                        onClick={() => {
-                          setSelectedQuestion(q);
-                          setConfirmOpen(true);
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
+                      />
+                    </Typography>
                   </Box>
                 </Box>
-              </Grid>
-            ))}
-          </Grid>
 
-          <QuestionFormModal
-            open={openModal}
-            onClose={() => setOpenModal(false)}
-            editMode={editMode}
-            initialValues={selectedQuestion}
-            onSubmit={(values) => handleAddEdit(values, editMode)}
-            optionCount={game?.choicesCount}
-          />
+                <Divider sx={{ mt: 2 }} />
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: 2,
+                  mb: 2,
+                  width: "100%",
+                }}
+              >
+                {/* Left Side: Download + Upload */}
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<DownloadIcon />}
+                    onClick={() => setDownloadModalOpen(true)}
+                  >
+                    {questionsTranslations[language].downloadTemplate}
+                  </Button>
 
-          <ConfirmationDialog
-            open={confirmOpen}
-            title="Delete Question?"
-            message={`Are you sure you want to delete this question?`}
-            onClose={() => setConfirmOpen(false)}
-            onConfirm={handleDelete}
-          />
-        </>
-      )}
-      <Dialog
-        open={downloadModalOpen}
-        onClose={() => setDownloadModalOpen(false)}
-      >
-        <DialogTitle>Download Template</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
-        >
-          <FormControl fullWidth>
-            <InputLabel>Number of Options</InputLabel>
-            <Select
-              value={downloadChoices}
-              onChange={(e) => setDownloadChoices(e.target.value)}
-              label="Number of Options"
-            >
-              {[2, 3, 4, 5].map((n) => (
-                <MenuItem key={n} value={n}>
-                  {n}
-                </MenuItem>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<UploadFileIcon />}
+                  >
+                    {questionsTranslations[language].uploadQuestions}
+                    <input
+                      hidden
+                      type="file"
+                      accept=".xlsx"
+                      onChange={handleUpload}
+                    />
+                  </Button>
+                </Box>
+
+                {/* Right Side: Add Button aligned right */}
+                <Box sx={{ ml: "auto" }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                      setEditMode(false);
+                      setSelectedQuestion(null);
+                      setOpenModal(true);
+                    }}
+                  >
+                    {questionsTranslations[language].addQuestion}
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+
+            <Grid container spacing={3}>
+              {questions?.map((q, idx) => (
+                <Grid item xs={12} sm={6} md={4} key={q._id || idx}>
+                  <Box
+                    sx={{
+                      borderRadius: 2,
+                      boxShadow: 3,
+                      p: 2,
+                      bgcolor: "#fff",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      minHeight: 300, // ensures consistent height
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        gutterBottom
+                      >
+                        Q{idx + 1}
+                      </Typography>
+
+                      <Typography variant="body1" sx={{ mb: 1 }}>
+                        <strong>
+                          {questionsTranslations[language].questionLabel}
+                        </strong>{" "}
+                        {q.question}
+                      </Typography>
+
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          sx={{ mb: 0.5 }}
+                        >
+                          {questionsTranslations[language].optionsLabel}
+                        </Typography>
+                        {q.answers.map((a, i) => (
+                          <Typography
+                            key={i}
+                            variant="body2"
+                            sx={{
+                              color:
+                                i === q.correctAnswerIndex
+                                  ? "green"
+                                  : "text.secondary",
+                            }}
+                          >
+                            {String.fromCharCode(65 + i)}. {a}
+                          </Typography>
+                        ))}
+                      </Box>
+
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        <strong>
+                          {questionsTranslations[language].correctAnswerLabel}
+                        </strong>{" "}
+                        <span style={{ color: "green" }}>
+                          {String.fromCharCode(65 + q.correctAnswerIndex)}.{" "}
+                          {q.answers[q.correctAnswerIndex]}
+                        </span>
+                      </Typography>
+
+                      {q.hint && (
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ mt: 1, display: "block" }}
+                        >
+                          <strong>
+                            {questionsTranslations[language].hintLabel}
+                          </strong>{" "}
+                          {q.hint}
+                        </Typography>
+                      )}
+                    </Box>
+
+                    <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+                      <Tooltip
+                        title={questionsTranslations[language].editTooltip}
+                      >
+                        <IconButton
+                          color="info"
+                          onClick={() => {
+                            setSelectedQuestion(q);
+                            setEditMode(true);
+                            setOpenModal(true);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip
+                        title={questionsTranslations[language].deleteTooltip}
+                      >
+                        <IconButton
+                          color="error"
+                          onClick={() => {
+                            setSelectedQuestion(q);
+                            setConfirmOpen(true);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+                </Grid>
               ))}
-            </Select>
-          </FormControl>
+            </Grid>
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={includeHint}
-                onChange={(e) => setIncludeHint(e.target.checked)}
-              />
-            }
-            label="Include Hint Column"
-          />
-        </DialogContent>
+            <QuestionFormModal
+              open={openModal}
+              onClose={() => setOpenModal(false)}
+              editMode={editMode}
+              initialValues={selectedQuestion}
+              onSubmit={(values) => handleAddEdit(values, editMode)}
+              optionCount={game?.choicesCount}
+            />
 
-        <DialogActions sx={{ p: 3 }}>
-          <Button
-            onClick={() => setDownloadModalOpen(false)}
-            variant="outlined"
+            <ConfirmationDialog
+              open={confirmOpen}
+              title={questionsTranslations[language].deleteQuestionTitle}
+              message={questionsTranslations[language].deleteQuestionMessage}
+              onClose={() => setConfirmOpen(false)}
+              onConfirm={handleDelete}
+            />
+          </>
+        )}
+        <Dialog
+          open={downloadModalOpen}
+          onClose={() => setDownloadModalOpen(false)}
+        >
+          <DialogTitle>
+            {questionsTranslations[language].downloadTemplateTitle}
+          </DialogTitle>
+          <DialogContent
+            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
           >
-            Cancel
-          </Button>
-          <Button onClick={handleDownload} variant="contained">
-            Download
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+            <FormControl fullWidth>
+              <InputLabel>
+                {questionsTranslations[language].numberOptionsLabel}
+              </InputLabel>
+              <Select
+                value={downloadChoices}
+                onChange={(e) => setDownloadChoices(e.target.value)}
+                label={questionsTranslations[language].numberOptionsLabel}
+              >
+                {[2, 3, 4, 5].map((n) => (
+                  <MenuItem key={n} value={n}>
+                    {n}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={includeHint}
+                  onChange={(e) => setIncludeHint(e.target.checked)}
+                />
+              }
+              label={questionsTranslations[language].includeHintLabel}
+            />
+          </DialogContent>
+
+          <DialogActions sx={{ p: 3 }}>
+            <Button
+              onClick={() => setDownloadModalOpen(false)}
+              variant="outlined"
+            >
+              {questionsTranslations[language].cancelButton}
+            </Button>
+            <Button onClick={handleDownload} variant="contained">
+              {questionsTranslations[language].downloadButton}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </Box>
   );
 }

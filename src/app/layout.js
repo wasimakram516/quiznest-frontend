@@ -2,6 +2,7 @@ import "./styles/globals.css";
 import ThemeRegistry from "@/app/styles/themeRegistry";
 import { MessageProvider } from "@/app/context/MessageContext";
 import { AuthProvider } from "@/app/context/AuthContext";
+import { LanguageProvider } from "@/app/context/LanguageContext";
 
 export const metadata = {
   title: "QuizNest – WhiteWall",
@@ -26,11 +27,13 @@ export default function RootLayout({ children }) {
         <meta name="author" content={metadata.author} />
       </head>
       <body>
-        <ThemeRegistry>
-          <AuthProvider>
-            <MessageProvider>{children}</MessageProvider>
-          </AuthProvider>
-        </ThemeRegistry>
+        <LanguageProvider>
+          <ThemeRegistry>
+            <AuthProvider>
+              <MessageProvider>{children}</MessageProvider>
+            </AuthProvider>
+          </ThemeRegistry>
+        </LanguageProvider>
       </body>
     </html>
   );

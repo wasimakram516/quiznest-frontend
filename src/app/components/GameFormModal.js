@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useMessage } from "@/app/context/MessageContext";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const GameFormModal = ({
   open,
@@ -40,7 +42,7 @@ const GameFormModal = ({
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const { showMessage } = useMessage();
-
+  const { language } = useLanguage(); //Language Usage
   useEffect(() => {
     if (!open || !initialValues || Object.keys(initialValues).length === 0)
       return;
@@ -82,23 +84,83 @@ const GameFormModal = ({
       }));
     }
   };
-
+const gameDialogTranslations = {
+  en: {
+    dialogTitleUpdate: "Update Game",
+    dialogTitleCreate: "Create Game",
+    gameTitle: "Game Title",
+    slug: "Slug",
+    slugHelper: "Used in URLs (e.g., 'quiz-1')",
+    numberOfOptions: "Number of Options",
+    countdownTime: "Countdown Time (seconds)",
+    quizTime: "Quiz Time (seconds)",
+    coverImage: "Cover Image",
+    nameImage: "Name Image",
+    backgroundImage: "Background Image",
+    currentImage: "Current Image:",
+    preview: "Preview:",
+    cancel: "Cancel",
+    update: "Update",
+    create: "Create",
+    updating: "Updating...",
+    creating: "Creating...",
+    errors: {
+      titleRequired: "Title is required",
+      slugRequired: "Slug is required",
+      optionsRequired: "Option count is required",
+      countdownRequired: "Countdown time is required",
+      quizTimeRequired: "Quiz time is required",
+      coverRequired: "Cover image is required",
+      nameRequired: "Name image is required",
+      backgroundRequired: "Background image is required",
+      invalidImage: "Please upload a valid image file",
+    },
+  },
+  ar: {
+    dialogTitleUpdate: "تحديث اللعبة",
+    dialogTitleCreate: "إنشاء لعبة",
+    gameTitle: "عنوان اللعبة",
+    slug: "المعرف",
+    slugHelper: "يستخدم في الروابط (مثال: 'quiz-1')",
+    numberOfOptions: "عدد الخيارات",
+    countdownTime: "وقت العد التنازلي (ثانية)",
+    quizTime: "وقت الاختبار (ثانية)",
+    coverImage: "صورة الغلاف",
+    nameImage: "صورة الاسم",
+    backgroundImage: "صورة الخلفية",
+    currentImage: "الصورة الحالية:",
+    preview: "معاينة:",
+    cancel: "إلغاء",
+    update: "تحديث",
+    create: "إنشاء",
+    updating: "جارٍ التحديث...",
+    creating: "جارٍ الإنشاء...",
+    errors: {
+      titleRequired: "العنوان مطلوب",
+      slugRequired: "المعرف مطلوب",
+      optionsRequired: "عدد الخيارات مطلوب",
+      countdownRequired: "وقت العد التنازلي مطلوب",
+      quizTimeRequired: "وقت الاختبار مطلوب",
+      coverRequired: "صورة الغلاف مطلوبة",
+      nameRequired: "صورة الاسم مطلوبة",
+      backgroundRequired: "صورة الخلفية مطلوبة",
+      invalidImage: "الرجاء رفع صورة صالحة",
+    },
+  },
+};
   const validate = () => {
     const newErrors = {};
+    const t = gameDialogTranslations[language].errors;
 
-    if (!form.title.trim()) newErrors.title = "Title is required";
-    if (!form.slug.trim()) newErrors.slug = "Slug is required";
-    if (!form.choicesCount) newErrors.choicesCount = "Option count is required";
-    if (!form.countdownTimer)
-      newErrors.countdownTimer = "Countdown time is required";
-    if (!form.gameSessionTimer)
-      newErrors.gameSessionTimer = "Quiz time is required";
-    if (!editMode && !form.coverImage)
-      newErrors.coverImage = "Cover image is required";
-    if (!editMode && !form.nameImage)
-      newErrors.nameImage = "Name image is required";
+    if (!form.title.trim()) newErrors.title = t.titleRequired;
+    if (!form.slug.trim()) newErrors.slug = t.slugRequired;
+    if (!form.choicesCount) newErrors.choicesCount = t.optionsRequired;
+    if (!form.countdownTimer) newErrors.countdownTimer = t.countdownRequired;
+    if (!form.gameSessionTimer) newErrors.gameSessionTimer = t.quizTimeRequired;
+    if (!editMode && !form.coverImage) newErrors.coverImage = t.coverRequired;
+    if (!editMode && !form.nameImage) newErrors.nameImage = t.nameRequired;
     if (!editMode && !form.backgroundImage)
-      newErrors.backgroundImage = "Background image is required";
+      newErrors.backgroundImage = t.backgroundRequired;
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -119,16 +181,16 @@ const GameFormModal = ({
 
       if (form.coverImage) payload.append("cover", form.coverImage);
       if (form.nameImage) payload.append("name", form.nameImage);
-      if (form.backgroundImage) payload.append("background", form.backgroundImage);
+      if (form.backgroundImage)
+        payload.append("background", form.backgroundImage);
 
-      await onSubmit(payload, editMode); 
+      await onSubmit(payload, editMode);
     } catch (error) {
       showMessage(
         error.response?.data?.message || "Failed to save game.",
         "error"
       );
-    }
-     finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -141,12 +203,16 @@ const GameFormModal = ({
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle>{editMode ? "Update Game" : "Create Game"}</DialogTitle>
+      <DialogTitle>
+        {editMode
+          ? gameDialogTranslations[language].dialogTitleUpdate
+          : gameDialogTranslations[language].dialogTitleCreate}
+      </DialogTitle>
 
       <DialogContent>
         <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
-            label="Game Title"
+            label={gameDialogTranslations[language].gameTitle}
             name="title"
             value={form.title}
             onChange={handleChange}
@@ -157,18 +223,18 @@ const GameFormModal = ({
           />
 
           <TextField
-            label="Slug"
+            label={gameDialogTranslations[language].slug}
             name="slug"
             value={form.slug}
             onChange={handleChange}
             error={!!errors.slug}
-            helperText={errors.slug || "Used in URLs (e.g., 'fun-quiz')"}
+            helperText={errors.slug || gameDialogTranslations[language].slugHelper}
             fullWidth
             required
           />
 
           <TextField
-            label="Number of Options"
+            label={gameDialogTranslations[language].numberOfOptions}
             name="choicesCount"
             value={form.choicesCount}
             onChange={handleChange}
@@ -183,7 +249,7 @@ const GameFormModal = ({
           </TextField>
 
           <TextField
-            label="Countdown Time (seconds before quiz starts)"
+            label={gameDialogTranslations[language].countdownTime}
             name="countdownTimer"
             type="number"
             value={form.countdownTimer}
@@ -192,7 +258,7 @@ const GameFormModal = ({
           />
 
           <TextField
-            label="Quiz Time (seconds)"
+            label={gameDialogTranslations[language].quizTime}
             name="gameSessionTimer"
             type="number"
             value={form.gameSessionTimer}
@@ -201,7 +267,7 @@ const GameFormModal = ({
           />
 
           {["coverImage", "nameImage", "backgroundImage"].map((key) => {
-            const label = key.replace("Image", " Image").toUpperCase();
+            const label = gameDialogTranslations[language][key];
             const previewSrc =
               editMode && !form[key]
                 ? form[key.replace("Image", "Preview")]
@@ -222,7 +288,9 @@ const GameFormModal = ({
                 {previewSrc && (
                   <Box sx={{ mt: 1 }}>
                     <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      {editMode && !form[key] ? "Current Image:" : "Preview:"}
+                      {editMode && !form[key]
+                        ? gameDialogTranslations[language].currentImage
+                        : gameDialogTranslations[language].preview}
                     </Typography>
                     <img
                       src={previewSrc}
@@ -250,7 +318,7 @@ const GameFormModal = ({
           color="inherit"
           disabled={loading}
         >
-          Cancel
+          {gameDialogTranslations[language].cancel}
         </Button>
         <Button
           onClick={handleSubmit}
@@ -260,11 +328,11 @@ const GameFormModal = ({
         >
           {loading
             ? editMode
-              ? "Updating..."
-              : "Creating..."
+              ? gameDialogTranslations[language].updating
+              : gameDialogTranslations[language].creating
             : editMode
-            ? "Update"
-            : "Create"}
+            ? gameDialogTranslations[language].update
+            : gameDialogTranslations[language].create}
         </Button>
       </DialogActions>
     </Dialog>

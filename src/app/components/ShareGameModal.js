@@ -14,25 +14,43 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useMessage } from "@/app/context/MessageContext";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const ShareGameModal = ({ open, onClose, gameSlug }) => {
   const { showMessage } = useMessage();
 
-  const gameLink = `${typeof window !== "undefined" ? window.location.origin : ""}/game/${gameSlug}`;
+  const gameLink = `${
+    typeof window !== "undefined" ? window.location.origin : ""
+  }/game/${gameSlug}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(gameLink);
     showMessage("Game link copied to clipboard!", "success");
   };
-
+  const { language } = useLanguage(); //Language Usage
+  const shareGameTranslations = {
+    en: {
+      title: "Share Game",
+      description: "Use the following link to share this game:",
+      copyTooltip: "Copy to Clipboard",
+      closeButton: "Close",
+    },
+    ar: {
+      title: "مشاركة اللعبة",
+      description: "استخدم الرابط التالي لمشاركة هذه اللعبة:",
+      copyTooltip: "نسخ إلى الحافظة",
+      closeButton: "إغلاق",
+    },
+  };
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ bgcolor: "primary.main", color: "white" }}>
-        Share Game
+        {shareGameTranslations[language].title}
       </DialogTitle>
       <DialogContent>
         <Typography sx={{ mt: 2 }}>
-          Use the following link to share this game:
+          {shareGameTranslations[language].description}
         </Typography>
         <TextField
           fullWidth
@@ -40,7 +58,7 @@ const ShareGameModal = ({ open, onClose, gameSlug }) => {
           InputProps={{
             readOnly: true,
             endAdornment: (
-              <Tooltip title="Copy to Clipboard">
+              <Tooltip title={shareGameTranslations[language].copyTooltip}>
                 <IconButton onClick={handleCopyLink}>
                   <ContentCopyIcon />
                 </IconButton>
@@ -52,7 +70,7 @@ const ShareGameModal = ({ open, onClose, gameSlug }) => {
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose} color="error">
-          Close
+          {shareGameTranslations[language].closeButton}
         </Button>
       </DialogActions>
     </Dialog>

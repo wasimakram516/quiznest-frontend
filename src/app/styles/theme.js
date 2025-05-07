@@ -36,11 +36,11 @@ const theme = createTheme({
       fontWeight: "bold",
     },
     h5: {
-      fontSize: "1.3rem",
-      fontWeight: "bold",
+      fontSize: "2rem",
+      // fontWeight: "bold",
     },
     h6: {
-      fontSize: "1.25rem",
+      fontSize: "1.75rem",
     },
     body1: {
       fontSize: "1.175rem",

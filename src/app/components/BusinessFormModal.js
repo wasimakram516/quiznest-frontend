@@ -12,6 +12,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useState, useEffect } from "react";
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const BusinessFormModal = ({
   open,
@@ -113,15 +115,63 @@ const BusinessFormModal = ({
       setLoading(false);
     }
   };
-
+  const { language } = useLanguage(); //Language Usage
+  const businessFormTranslations = {
+    en: {
+      titles: {
+        update: "Update Business",
+        create: "Create Business",
+      },
+      labels: {
+        name: "Business Name",
+        slug: "Slug",
+        slugHelper: "Used in URLs (e.g., 'oabc')",
+        description: "Description",
+        uploadLogo: "Upload Logo",
+        preview: "Preview:",
+      },
+      buttons: {
+        cancel: "Cancel",
+        update: "Update",
+        creating: "Creating...",
+        updating: "Updating...",
+        create: "Create",
+      },
+    },
+    ar: {
+      titles: {
+        update: "تحديث العمل",
+        create: "إنشاء عمل",
+      },
+      labels: {
+        name: "اسم العمل",
+        slug: "المعرف",
+        slugHelper: "يستخدم في الروابط (مثال: 'oabc')",
+        description: "الوصف",
+        uploadLogo: "رفع الشعار",
+        preview: "معاينة:",
+      },
+      buttons: {
+        cancel: "إلغاء",
+        update: "تحديث",
+        creating: "جاري الإنشاء...",
+        updating: "جاري التحديث...",
+        create: "إنشاء",
+      },
+    },
+  };
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{editMode ? "Update Business" : "Create Business"}</DialogTitle>
+      <DialogTitle>
+        {editMode
+          ? businessFormTranslations[language].titles.update
+          : businessFormTranslations[language].titles.create}
+      </DialogTitle>
 
       <DialogContent>
         <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
-            label="Business Name"
+            label={businessFormTranslations[language].labels.name}
             name="name"
             value={form.name}
             onChange={handleChange}
@@ -131,17 +181,20 @@ const BusinessFormModal = ({
             required
           />
           <TextField
-            label="Slug"
+            label={businessFormTranslations[language].labels.slug}
             name="slug"
             value={form.slug}
             onChange={handleChange}
             error={!!errors.slug}
-            helperText={errors.slug || "Used in URLs (e.g., 'oabc')"}
+            helperText={
+              errors.slug ||
+              businessFormTranslations[language].labels.slugHelper
+            }
             fullWidth
             required
           />
           <TextField
-            label="Description"
+            label={businessFormTranslations[language].labels.description}
             name="description"
             value={form.description}
             onChange={handleChange}
@@ -151,14 +204,19 @@ const BusinessFormModal = ({
           />
 
           <Button component="label" variant="outlined">
-            Upload Logo
-            <input hidden type="file" accept="image/*" onChange={handleFileChange} />
+            {businessFormTranslations[language].labels.uploadLogo}
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </Button>
 
           {form.logoPreview && (
             <Box sx={{ mt: 1 }}>
               <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                Preview:
+                {businessFormTranslations[language].labels.preview}
               </Typography>
               <img
                 src={form.logoPreview}
@@ -177,8 +235,13 @@ const BusinessFormModal = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={onClose} variant="outlined" color="inherit" disabled={loading}>
-          Cancel
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          color="inherit"
+          disabled={loading}
+        >
+          {businessFormTranslations[language].buttons.cancel}
         </Button>
         <Button
           onClick={handleSubmit}
@@ -186,7 +249,13 @@ const BusinessFormModal = ({
           disabled={loading}
           startIcon={loading && <CircularProgress size={20} color="inherit" />}
         >
-          {loading ? (editMode ? "Updating..." : "Creating...") : editMode ? "Update" : "Create"}
+          {loading
+            ? (editMode
+              ? businessFormTranslations[language].buttons.updating
+              : businessFormTranslations[language].buttons.creating)
+            : (editMode
+            ? businessFormTranslations[language].buttons.update
+            : businessFormTranslations[language].buttons.create)}
         </Button>
       </DialogActions>
     </Dialog>

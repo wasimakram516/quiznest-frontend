@@ -218,51 +218,56 @@ export default function PlayPage() {
 
   if (ended) {
     return (
-      <Box
-        sx={{
-          height: "100vh",
-          width: "100vw",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background:
-            "linear-gradient(135deg, rgba(0,0,0,0.8), rgba(50,50,50,0.8))",
-          p: 2,
-          textAlign: "center",
-        }}
-      >
-        <Fade in timeout={800}>
-          <Paper
-            elevation={8}
-            sx={{
-              width: { xs: "80%", sm: "50%" },
-              p: 4,
-              borderRadius: 3,
-              background:
-                "linear-gradient(135deg, rgba(76,175,80,0.8), rgba(56,142,60,0.8))",
-              color: "#fff",
-              boxShadow: "0 0 30px rgba(0,0,0,0.6)",
-              backdropFilter: "blur(5px)",
-            }}
-          >
-            <Typography variant="h4" fontWeight="bold" mb={2}>
-              {gameTranslations[language].thankYou}, {playerInfo.name}!
-            </Typography>
-            <Typography variant="h2" mb={1}>
-              {gameTranslations[language].score}: {score}
-            </Typography>
-            <Typography variant="h6" mb={3}>
-              {gameTranslations[language].attempted}: {attempted}
-            </Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => router.push(`/game/${game.slug}/name`)}
+      <Box sx={{ position: "relative" }}>
+        <LanguageSelector />
+        <Box
+          sx={{
+            height: "100vh",
+            width: "100vw",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background:
+              "linear-gradient(135deg, rgba(0,0,0,0.8), rgba(50,50,50,0.8))",
+            p: 2,
+            textAlign: "center",
+          }}
+        >
+          <Fade in timeout={800}>
+            <Paper
+              elevation={8}
+              sx={{
+                width: { xs: "80%", sm: "50%" },
+                p: 4,
+                borderRadius: 3,
+                background:
+                  "linear-gradient(135deg, rgba(76,175,80,0.8), rgba(56,142,60,0.8))",
+                color: "#fff",
+                boxShadow: "0 0 30px rgba(0,0,0,0.6)",
+                backdropFilter: "blur(5px)",
+                marginTop: "30vh",
+              }}
             >
-              {gameTranslations[language].playAgain}
-            </Button>
-          </Paper>
-        </Fade>
+              <Typography variant="h3" fontWeight="bold" mb={2}>
+                {gameTranslations[language].thankYou} {playerInfo.name}!
+              </Typography>
+              <Typography variant="h2" mb={1}>
+                {gameTranslations[language].score}: {score}
+              </Typography>
+              <Typography variant="h6" mb={3}>
+                {gameTranslations[language].attempted}: {attempted}
+              </Typography>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ fontSize: "1.5rem" }}
+                onClick={() => router.push(`/game/${game.slug}`)}
+              >
+                {gameTranslations[language].playAgain}
+              </Button>
+            </Paper>
+          </Fade>
+        </Box>
       </Box>
     );
   }
@@ -337,19 +342,20 @@ export default function PlayPage() {
           <Paper
             elevation={4}
             sx={{
-              width: "100%",
+              width: "80%",
               p: 4,
               textAlign: "center",
               backdropFilter: "blur(6px)",
               backgroundColor: "rgba(255,255,255,0.5)",
               borderRadius: 4,
+              marginTop: "10vh",
             }}
           >
             <Typography variant="h5" gutterBottom fontWeight="bold">
               {gameTranslations[language].question} {questionIndex + 1}{" "}
               {gameTranslations[language].of} {game.questions.length}
             </Typography>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h5" gutterBottom>
               {currentQuestion?.question}
             </Typography>
 
@@ -380,7 +386,7 @@ export default function PlayPage() {
                     key={i}
                     sx={{
                       display: "flex",
-                      minHeight: "300px",
+                      minHeight: "150px",
                       maxWidth: "400px",
                       minWidth: "300px",
                     }}
@@ -392,7 +398,7 @@ export default function PlayPage() {
                       sx={{
                         backgroundColor: bg,
                         fontWeight: "bold",
-                        fontSize: "1rem",
+                        fontSize: "2.5rem",
                         borderRadius: 2,
                         textTransform: "none",
                         whiteSpace: "normal",
@@ -403,7 +409,7 @@ export default function PlayPage() {
                         alignItems: "center",
                         justifyContent: "center",
                         textAlign: "center",
-                        p: 2,
+                        p: 1,
                       }}
                     >
                       <Box

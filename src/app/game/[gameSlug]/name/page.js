@@ -112,9 +112,10 @@ export default function NamePage() {
             textAlign: "center",
             backdropFilter: "blur(6px)",
             backgroundColor: "rgba(255,255,255,0.5)",
+            marginTop: "30vh",
           }}
         >
-          <Typography variant="h5" fontWeight="bold" gutterBottom>
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
             {game.title}
           </Typography>
 
@@ -143,7 +144,7 @@ export default function NamePage() {
             sx={{
               px: 4,
               py: 1.5,
-              fontSize: "1rem",
+              fontSize: "1.5rem",
               fontWeight: "bold",
               borderRadius: "30px",
             }}

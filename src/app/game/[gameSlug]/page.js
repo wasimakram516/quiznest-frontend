@@ -72,10 +72,11 @@ export default function GameHomePage() {
             backdropFilter: "blur(8px)",
             backgroundColor: "rgba(255,255,255,0.5)",
             borderRadius: 4,
+            marginTop: "30vh",
           }}
         >
           <Typography
-            variant="h4"
+            variant="h3"
             fontWeight="bold"
             gutterBottom
             sx={{ mb: 3 }}
@@ -90,7 +91,7 @@ export default function GameHomePage() {
             sx={{
               px: 5,
               py: 1.5,
-              fontSize: "1.2rem",
+              fontSize: "1.5rem",
               fontWeight: "bold",
               borderRadius: "30px",
             }}

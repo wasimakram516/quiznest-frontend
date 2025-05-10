@@ -58,8 +58,8 @@ export default function InstructionsPage() {
     en: {
       welcome: "Welcome",
       instructionsTitle: "Here's what you need to know",
-      multipleChoice: "Multiple choices:",
-      countdownTimer: "Countdown timer:",
+      questionsCount: "Number of questions:",
+      quizDuration: "Quiz duration:",
       seconds: "seconds",
       startButton: "Start Game",
       backButton: "Back",
@@ -67,8 +67,8 @@ export default function InstructionsPage() {
     ar: {
       welcome: "أهلاً بك",
       instructionsTitle: "هذا ما تحتاج معرفته",
-      multipleChoice: "الخيارات المتعددة:",
-      countdownTimer: "العد التنازلي للبدأ:",
+      questionsCount: "عدد الأسئلة:",
+      quizDuration: "مدة الإختبار:",
       seconds: "ثانية",
       startButton: "ابدأ اللعبة",
       backButton: "رجوع",
@@ -117,9 +117,10 @@ export default function InstructionsPage() {
             backdropFilter: "blur(8px)",
             backgroundColor: "rgba(255,255,255,0.5)",
             borderRadius: 4,
+            marginTop: "30vh",
           }}
         >
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
             {game.title}
           </Typography>
 
@@ -132,27 +133,25 @@ export default function InstructionsPage() {
           </Typography>
 
           <Stack spacing={2} sx={{ mb: 4 }} alignItems="flex-end">
-            
             <Stack direction="row-reverse" alignItems="center" spacing={1}>
               <QuizIcon color="primary" />
               <Typography variant="h6">
-                {gameInstructionsTranslations[language].multipleChoice}{" "}
+                {gameInstructionsTranslations[language].questionsCount}{" "}
                 <Box component="strong" display="inline">
-                  {game.choicesCount}
+                  {game.questions.length}
                 </Box>
               </Typography>
             </Stack>
             <Stack direction="row-reverse" alignItems="center" spacing={1}>
               <TimerIcon color="primary" />
               <Typography variant="h6">
-                {gameInstructionsTranslations[language].countdownTimer}{" "}
+                {gameInstructionsTranslations[language].quizDuration}{" "}
                 <Box component="strong" display="inline">
-                  {game.countdownTimer}{" "}
+                  {game.gameSessionTimer}{" "}
                   {gameInstructionsTranslations[language].seconds}
                 </Box>
               </Typography>
             </Stack>
-            
           </Stack>
 
           <Button
@@ -162,7 +161,7 @@ export default function InstructionsPage() {
             sx={{
               px: 4,
               py: 1.5,
-              fontSize: "1rem",
+              fontSize: "1.5rem",
               fontWeight: "bold",
               borderRadius: "30px",
             }}

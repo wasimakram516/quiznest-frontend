@@ -63,23 +63,25 @@ export default function GameHomePage() {
         }}
       >
         <Paper
-          elevation={5}
+          elevation={6}
           sx={{
             textAlign: "center",
-            p: 4,
-            maxWidth: 500,
+            p: { xs: 3, sm: 4 },
+            maxWidth: 480,
             width: "100%",
-            backdropFilter: "blur(8px)",
-            backgroundColor: "rgba(255,255,255,0.5)",
-            borderRadius: 4,
-            marginTop: "30vh",
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(255, 255, 255, 0.6)",
+            borderRadius: 6,
+            mt: { xs: 10, sm: "15vh" },
+            mx: "auto",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
           }}
         >
           <Typography
             variant="h3"
-            fontWeight="bold"
+            fontWeight={700}
             gutterBottom
-            sx={{ mb: 3 }}
+            sx={{ mb: 3, color: "primary.main", textTransform: "capitalize" }}
           >
             {game.title}
           </Typography>
@@ -89,11 +91,18 @@ export default function GameHomePage() {
             size="large"
             onClick={handleStart}
             sx={{
-              px: 5,
-              py: 1.5,
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              borderRadius: "30px",
+              px: 6,
+              py: 2,
+              fontSize: "1.25rem",
+              fontWeight: 600,
+              borderRadius: 8,
+              textTransform: "none",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.3)",
+              },
             }}
           >
             {gameStartTranslations[language].startButton}

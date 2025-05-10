@@ -129,7 +129,7 @@ export default function InstructionsPage() {
             {game.title}
           </Typography>
 
-          <Typography variant="h4" sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{ mb: 4 }}dir={language === "ar" ? "rtl" : "ltr"}>
             {gameInstructionsTranslations[language].welcome}{" "}
             <Box component="span" fontWeight={600}>
               {playerInfo.name}

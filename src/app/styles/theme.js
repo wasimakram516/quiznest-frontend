@@ -36,7 +36,7 @@ const theme = createTheme({
       fontWeight: "bold",
     },
     h5: {
-      fontSize: "2rem",
+      fontSize: "2.25rem",
       // fontWeight: "bold",
     },
     h6: {

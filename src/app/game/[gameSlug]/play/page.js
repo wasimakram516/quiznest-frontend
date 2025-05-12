@@ -37,8 +37,8 @@ export default function PlayPage() {
   const scoreRef = useRef(0);
   const attemptedRef = useRef(0);
   const timeLeftRef = useRef(game?.gameSessionTimer || 60);
-
-  const currentQuestion = game?.questions?.[questionIndex];
+  const [randomizedIndexes, setRandomizedIndexes] = useState([]); //random questions
+  const currentQuestion = game?.questions?.[randomizedIndexes[questionIndex] ?? questionIndex];
 
   const correctSound =
     typeof Audio !== "undefined" ? new Audio("/correct.wav") : null;
@@ -46,7 +46,18 @@ export default function PlayPage() {
     typeof Audio !== "undefined" ? new Audio("/wrong.wav") : null;
   const celebrateSound =
     typeof Audio !== "undefined" ? new Audio("/celebrate.mp3") : null;
-
+  // Initialize randomization when game loads
+  useEffect(() => {
+    if (game?.questions) {
+      // Create array of indexes and shuffle them
+      const indexes = Array.from(
+        { length: game.questions.length },
+        (_, i) => i
+      );
+      const shuffled = [...indexes].sort(() => Math.random() - 0.5);
+      setRandomizedIndexes(shuffled);
+    }
+  }, [game]);
   useEffect(() => {
     const stored = localStorage.getItem("playerInfo");
     if (stored) setPlayerInfo(JSON.parse(stored));
@@ -79,7 +90,6 @@ export default function PlayPage() {
       });
     }, 1000);
   };
-
   const endGame = async () => {
     if (hasSubmittedRef.current) return;
     hasSubmittedRef.current = true;
@@ -153,7 +163,7 @@ export default function PlayPage() {
   };
 
   const goNext = () => {
-    if (questionIndex + 1 >= game.questions.length) {
+    if (questionIndex + 1 >= randomizedIndexes.length) {
       clearInterval(intervalRef.current);
       endGame();
     } else {
@@ -353,9 +363,10 @@ export default function PlayPage() {
           >
             <Typography variant="h5" gutterBottom fontWeight="bold">
               {gameTranslations[language].question} {questionIndex + 1}{" "}
-              {gameTranslations[language].of} {game.questions.length}
+              {gameTranslations[language].of}{" "}
+              {randomizedIndexes.length || game.questions.length}
             </Typography>
-            <Typography variant="h5" gutterBottom>
+            <Typography sx={{ fontSize: "3rem" }} gutterBottom>
               {currentQuestion?.question}
             </Typography>
 
@@ -368,6 +379,9 @@ export default function PlayPage() {
                 mt: 2,
                 maxWidth: "800px",
                 mx: "auto",
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)", // Enforce 2 columns
+                gridAutoRows: "1fr", // Equal height rows
               }}
             >
               {currentQuestion.answers.map((opt, i) => {
@@ -386,9 +400,8 @@ export default function PlayPage() {
                     key={i}
                     sx={{
                       display: "flex",
-                      minHeight: "150px",
-                      maxWidth: "400px",
-                      minWidth: "300px",
+                      minHeight: "150px", // Minimum height
+                      gridColumn: i === 4 ? "1 / -1" : "auto", // Span full width for 5th option
                     }}
                   >
                     <Button
@@ -398,7 +411,7 @@ export default function PlayPage() {
                       sx={{
                         backgroundColor: bg,
                         fontWeight: "bold",
-                        fontSize: "2.5rem",
+                        fontSize: "2rem",
                         borderRadius: 2,
                         textTransform: "none",
                         whiteSpace: "normal",

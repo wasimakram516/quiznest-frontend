@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { submitResult } from "@/services/playerService";
 import LanguageSelector from "@/app/components/LanguageSelector";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { translateText } from "@/services/translationService";
 
 export default function PlayPage() {
   const { game, loading } = useGame();
@@ -31,6 +32,7 @@ export default function PlayPage() {
   const [showHint, setShowHint] = useState(false);
   const [score, setScore] = useState(0);
   const [attempted, setAttempted] = useState(0);
+  const [translatedContent, setTranslatedContent] = useState({});
 
   const intervalRef = useRef(null);
   const hasSubmittedRef = useRef(false);
@@ -38,31 +40,106 @@ export default function PlayPage() {
   const attemptedRef = useRef(0);
   const timeLeftRef = useRef(game?.gameSessionTimer || 60);
   const [randomizedIndexes, setRandomizedIndexes] = useState([]); //random questions
-  const currentQuestion = game?.questions?.[randomizedIndexes[questionIndex] ?? questionIndex];
-
+  const currentQuestion =
+    game?.questions?.[randomizedIndexes[questionIndex] ?? questionIndex];
+  const { language } = useLanguage(); //Language Usage
   const correctSound =
     typeof Audio !== "undefined" ? new Audio("/correct.wav") : null;
   const wrongSound =
     typeof Audio !== "undefined" ? new Audio("/wrong.wav") : null;
   const celebrateSound =
     typeof Audio !== "undefined" ? new Audio("/celebrate.mp3") : null;
-  // Initialize randomization when game loads
+
+  const languageCodeMap = {
+    en: "en",
+    ar: "ar",
+    // Add more as needed
+  };
+  const translateQuestion = async (questionObj) => {
+    if (!questionObj) return;
+
+    const targetLang = languageCodeMap[language] || "en";
+
+    try {
+      // Translate all content in parallel
+      const [
+        translatedQuestion,
+        translatedAnswers,
+        translatedHint,
+        translatedUILabels,
+      ] = await Promise.all([
+        // Translate question content
+        translateText(questionObj.question, targetLang),
+        Promise.all(
+          questionObj.answers.map((answer) => translateText(answer, targetLang))
+        ),
+        questionObj.hint
+          ? translateText(questionObj.hint, targetLang)
+          : Promise.resolve(null),
+
+        // Translate UI labels
+        Promise.all([
+          translateText("Question", targetLang),
+          translateText("of", targetLang),
+          translateText("sec", targetLang),
+        ]),
+      ]);
+
+      // Update state with all translations
+      setTranslatedContent({
+        question: translatedQuestion,
+        answers: translatedAnswers,
+        hint: translatedHint,
+        uiLabels: {
+          questionLabel: translatedUILabels[0],
+          ofLabel: translatedUILabels[1],
+          countdownLabel: translatedUILabels[2],
+        },
+      });
+    } catch (error) {
+      console.error("Error translating question:", error);
+      // Fallback to original text if translation fails
+      setTranslatedContent({
+        question: questionObj.question,
+        answers: questionObj.answers,
+        hint: questionObj.hint,
+        uiLabels: {
+          questionLabel: "Question",
+          ofLabel: "of",
+          countdownLabel: "sec",
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (currentQuestion) {
+      translateQuestion(currentQuestion);
+    }
+  }, [currentQuestion, language]);
+
+  // Randomize question order when game loads
   useEffect(() => {
     if (game?.questions) {
+      
       // Create array of indexes and shuffle them
       const indexes = Array.from(
         { length: game.questions.length },
         (_, i) => i
       );
       const shuffled = [...indexes].sort(() => Math.random() - 0.5);
+      
       setRandomizedIndexes(shuffled);
     }
   }, [game]);
+
+  // Load Player Info from LocalStorage
   useEffect(() => {
     const stored = localStorage.getItem("playerInfo");
     if (stored) setPlayerInfo(JSON.parse(stored));
   }, []);
 
+  //Countdown Before Starting Game
   useEffect(() => {
     if (!loading && delay > 0) {
       const countdown = setInterval(() => {
@@ -75,6 +152,7 @@ export default function PlayPage() {
     }
   }, [delay, loading]);
 
+  //Start Session Timer (timer of the quiz (60sec))
   const startSessionTimer = () => {
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -90,6 +168,8 @@ export default function PlayPage() {
       });
     }, 1000);
   };
+
+  //Submit Results and End Game
   const endGame = async () => {
     if (hasSubmittedRef.current) return;
     hasSubmittedRef.current = true;
@@ -105,7 +185,9 @@ export default function PlayPage() {
       timeTaken: game.gameSessionTimer - timeLeftRef.current,
     });
   };
-  const { language } = useLanguage(); //Language Usage
+
+  //static translations
+
   const gameTranslations = {
     en: {
       countdown: "sec",
@@ -129,6 +211,7 @@ export default function PlayPage() {
     },
   };
 
+  //Triggered when user clicks on an answer.
   const handleSelect = (i) => {
     if (selected !== null) return;
 
@@ -162,6 +245,7 @@ export default function PlayPage() {
     }
   };
 
+  //Navigating to Next Question
   const goNext = () => {
     if (questionIndex + 1 >= randomizedIndexes.length) {
       clearInterval(intervalRef.current);
@@ -331,7 +415,7 @@ export default function PlayPage() {
               mb: { xs: "0.4rem", sm: "0.6rem" }, // slight bottom align
             }}
           >
-            {gameTranslations[language].countdown}
+            {translatedContent.uiLabels?.countdownLabel || "sec"}
           </Typography>
         </Box>
 
@@ -362,12 +446,12 @@ export default function PlayPage() {
             }}
           >
             <Typography variant="h5" gutterBottom fontWeight="bold">
-              {gameTranslations[language].question} {questionIndex + 1}{" "}
-              {gameTranslations[language].of}{" "}
+              {translatedContent.uiLabels?.questionLabel || "Question"}{" "}
+              {questionIndex + 1} {translatedContent.uiLabels?.ofLabel || "of"}{" "}
               {randomizedIndexes.length || game.questions.length}
             </Typography>
             <Typography sx={{ fontSize: "3rem" }} gutterBottom>
-              {currentQuestion?.question}
+              {translatedContent.question || currentQuestion?.question}
             </Typography>
 
             <Grid
@@ -384,7 +468,7 @@ export default function PlayPage() {
                 gridAutoRows: "1fr", // Equal height rows
               }}
             >
-              {currentQuestion.answers.map((opt, i) => {
+              {translatedContent.answers.map((opt, i) => {
                 const isSelected = selected === i;
                 const isCorrect = i === currentQuestion.correctAnswerIndex;
                 const bg = isSelected

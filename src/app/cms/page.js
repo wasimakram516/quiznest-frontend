@@ -84,6 +84,7 @@ const translations = {
                 display: "flex",
                 alignItems: "center",
                 gap: { xs: 11, sm: 2 },
+                mt:2
               }}
             >
               <Button
@@ -92,7 +93,7 @@ const translations = {
                 startIcon={<LogoutIcon />}
                 onClick={() => setLogoutDialogOpen(true)}
                 sx={{
-                  whiteSpace: "nowrap", // Prevents text wrapping
+                  whiteSpace: "nowrap", 
                 }}
               >
                 {translations[language].logout}

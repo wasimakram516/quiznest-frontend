@@ -255,7 +255,7 @@ export default function PlayPage() {
                 color: "#fff",
                 boxShadow: "0 0 30px rgba(0,0,0,0.6)",
                 backdropFilter: "blur(5px)",
-                marginTop: "30vh",
+                marginTop: "15vh",
               }}
             >
               <Typography variant="h3" fontWeight="bold" mb={2}>

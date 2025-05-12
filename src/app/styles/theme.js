@@ -24,26 +24,27 @@ const theme = createTheme({
       fontWeight: "bold",
     },
     h2: {
-      fontSize: "2rem",
+      fontSize: "2.5rem",
       fontWeight: "bold",
     },
     h3: {
-      fontSize: "1.75rem",
+      fontSize: "2rem",
       fontWeight: "bold",
     },
     h4: {
-      fontSize: "1.5rem",
+      fontSize: "1.75rem",
       fontWeight: "bold",
     },
     h5: {
-      fontSize: "2.25rem",
-      // fontWeight: "bold",
+      fontSize: "1.5rem",
+      fontWeight: "bold",
     },
     h6: {
-      fontSize: "1.5rem",
+      fontSize: "1.25rem",
+      fontWeight: "bold",
     },
     body1: {
-      fontSize: "1.175rem",
+      fontSize: "1rem",
     },
     body2: {
       fontSize: "0.95rem",

@@ -63,10 +63,12 @@ export default function NamePage() {
   const entryDialogTranslations = {
     en: {
       nameLabel: "Name",
+      companyLabel: "Company",
       startButton: "Start",
     },
     ar: {
       nameLabel: "الاسم",
+      companyLabel:"اسم الشركة",
       startButton: "ابدأ",
     },
   };
@@ -104,18 +106,25 @@ export default function NamePage() {
         </IconButton>
 
         <Paper
-          elevation={4}
+          elevation={6}
           sx={{
-            p: 4,
+            p: { xs: 3, sm: 4 },
             width: "100%",
             maxWidth: 500,
             textAlign: "center",
-            backdropFilter: "blur(6px)",
-            backgroundColor: "rgba(255,255,255,0.5)",
-            marginTop: "30vh",
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(255,255,255,0.6)",
+            borderRadius: 6,
+            mt: { xs: 10, sm: "15vh" },
+            mx: "auto",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
           }}
         >
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
+          <Typography
+            variant="h1"
+            gutterBottom
+            sx={{ mb: 4, color: "primary.main" }}
+          >
             {game.title}
           </Typography>
 
@@ -123,17 +132,30 @@ export default function NamePage() {
             label={entryDialogTranslations[language].nameLabel}
             fullWidth
             required
-            sx={{ my: 2 }}
+            sx={{
+              mb: 3,
+              "& .MuiInputBase-root": {
+                borderRadius: 2,
+                backgroundColor: "rgba(255,255,255,0.8)",
+              },
+            }}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
+
           {/* <TextField
-          label="اسم الشركة"
-          fullWidth
-          sx={{ mb: 2 }}
-          value={form.company}
-          onChange={(e) => setForm({ ...form, company: e.target.value })}
-        /> */}
+            label={entryDialogTranslations[language].companyLabel}
+            fullWidth
+            sx={{
+              mb: 3,
+              "& .MuiInputBase-root": {
+                borderRadius: 2,
+                backgroundColor: "rgba(255,255,255,0.8)",
+              },
+            }}
+            value={form.company}
+            onChange={(e) => setForm({ ...form, company: e.target.value })}
+          /> */}
 
           <Button
             variant="contained"
@@ -142,11 +164,18 @@ export default function NamePage() {
             onClick={handleSubmit}
             disabled={submitting}
             sx={{
-              px: 4,
+              px: 6,
               py: 1.5,
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              borderRadius: "30px",
+              fontSize: "1.25rem",
+              fontWeight: 600,
+              borderRadius: 8,
+              textTransform: "none",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.3)",
+              },
             }}
           >
             {submitting ? (
@@ -157,7 +186,7 @@ export default function NamePage() {
           </Button>
 
           {error && (
-            <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+            <Typography variant="caption" color="error" sx={{ mt: 2 }}>
               {error}
             </Typography>
           )}

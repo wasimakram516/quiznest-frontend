@@ -12,8 +12,8 @@ const LanguageSelector = () => {
         position: "absolute",
         width: "80px",
         height: "40px",
-        top: "5px", // Position from top
-        right: "14px",
+        top: 10, 
+        right: 30,
       }}
     >
       {/* Inactive Button (Behind) */}

@@ -304,7 +304,7 @@ export default function PlayPage() {
             alignItems: "flex-end",
             gap: 1,
             position: "absolute",
-            top: { xs: 20, sm: 40 },
+            top: { xs: 20, sm: 150 },
             left: "50%",
             transform: "translateX(-50%)",
           }}
@@ -352,7 +352,7 @@ export default function PlayPage() {
           <Paper
             elevation={4}
             sx={{
-              width: "80%",
+              width: "95%",
               p: 4,
               textAlign: "center",
               backdropFilter: "blur(6px)",

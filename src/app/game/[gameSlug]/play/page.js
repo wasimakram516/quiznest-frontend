@@ -366,7 +366,7 @@ export default function PlayPage() {
               alignItems="stretch"
               sx={{
                 mt: 2,
-                maxWidth: "800px",
+                maxWidth: "600px",
                 mx: "auto",
               }}
             >
@@ -382,13 +382,11 @@ export default function PlayPage() {
                 return (
                   <Grid
                     item
-                    xs={6}
+                    xs={12}
+                    sm={6}
                     key={i}
                     sx={{
                       display: "flex",
-                      minHeight: "150px",
-                      maxWidth: "400px",
-                      minWidth: "300px",
                     }}
                   >
                     <Button
@@ -398,23 +396,28 @@ export default function PlayPage() {
                       sx={{
                         backgroundColor: bg,
                         fontWeight: "bold",
-                        fontSize: "2.5rem",
+                        fontSize: "1.2rem",
                         borderRadius: 2,
                         textTransform: "none",
                         whiteSpace: "normal",
                         wordBreak: "break-word",
                         overflowWrap: "break-word",
-                        height: "100%",
+                        minHeight: "150px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        textAlign: "center",
-                        p: 1,
+                        p: 2,
                       }}
                     >
                       <Box
                         sx={{
                           width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          px: 1,
                         }}
                       >
                         {opt}

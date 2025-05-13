@@ -1,17 +1,19 @@
-import api from "./api"; // Assuming api.js sets up Axios for API calls
-
-// **Translate API Call**
+import api from "./api";
 export const translateText = async (text, targetLang) => {
   try {
-    // Check if the text is not empty before making a request
-    if (!text) return text; // If no text, return the original text
+    if (!text) return text;
 
-    const { data } = await api.post("/translate", { text, targetLang });
+    const response = await api.post("/translate", { text, targetLang });
 
-    // Return the translated text from the backend
-    return data.translatedText;
+    // Handle backend response structure
+    if (response.data.success) {
+      return response.data.data.translatedText;
+    } else {
+      console.error("Translation failed:", response.data.message);
+      return text; // Fallback to original
+    }
   } catch (error) {
-    console.error("Translation failed:", error);
+    console.error("API call failed:", error);
     return text; // Return original text in case of failure
   }
 };

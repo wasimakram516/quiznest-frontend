@@ -61,44 +61,26 @@ export default function PlayPage() {
     const targetLang = languageCodeMap[language] || "en";
 
     try {
-      // Translate all content in parallel
-      const [
-        translatedQuestion,
-        translatedAnswers,
-        translatedHint,
-        translatedUILabels,
-      ] = await Promise.all([
-        // Translate question content
+      const [question, answers, hint] = await Promise.all([
         translateText(questionObj.question, targetLang),
         Promise.all(
           questionObj.answers.map((answer) => translateText(answer, targetLang))
         ),
-        questionObj.hint
-          ? translateText(questionObj.hint, targetLang)
-          : Promise.resolve(null),
-
-        // Translate UI labels
-        Promise.all([
-          translateText("Question", targetLang),
-          translateText("of", targetLang),
-          translateText("sec", targetLang),
-        ]),
+        questionObj.hint ? translateText(questionObj.hint, targetLang) : null,
       ]);
 
-      // Update state with all translations
       setTranslatedContent({
-        question: translatedQuestion,
-        answers: translatedAnswers,
-        hint: translatedHint,
+        question,
+        answers,
+        hint,
         uiLabels: {
-          questionLabel: translatedUILabels[0],
-          ofLabel: translatedUILabels[1],
-          countdownLabel: translatedUILabels[2],
+          questionLabel: gameTranslations[language].question,
+          ofLabel: gameTranslations[language].of,
+          countdownLabel: gameTranslations[language].countdown,
         },
       });
     } catch (error) {
-      console.error("Error translating question:", error);
-      // Fallback to original text if translation fails
+      console.error("Translation error:", error);
       setTranslatedContent({
         question: questionObj.question,
         answers: questionObj.answers,
@@ -520,7 +502,7 @@ export default function PlayPage() {
                           px: 1,
                         }}
                       >
-                        {opt}
+                       {opt}
                       </Box>
                     </Button>
                   </Grid>
